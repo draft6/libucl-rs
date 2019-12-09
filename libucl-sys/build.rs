@@ -16,8 +16,7 @@ fn main() {
     cmd
         .current_dir(&src.join("libucl"))
         .arg(&format!("--prefix={}", dst.display()));
-    run(cmd.arg("--enable-urls")
-           .arg("--enable-regex")
+    run(cmd.arg("--enable-regex")
            .arg("--disable-shared")
            .arg("--disable-dependency-tracking")
            .arg("--with-pic"), "configure");

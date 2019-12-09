@@ -1,14 +1,7 @@
 use libc::c_char;
 
 use std::str;
-use std::ffi::{
-    CString,
-    CStr
-};
-
-pub fn to_c_str<T: AsRef<str>>(string: T) -> *const c_char {
-    CString::new(string.as_ref()).unwrap().as_ptr()
-}
+use std::ffi::CStr;
 
 pub fn to_str(cstring: *const c_char) -> Option<String> {
     if cstring.is_null() { return None }

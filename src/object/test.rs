@@ -20,13 +20,13 @@ fn from_bool() {
 
 #[test]
 fn from_string() {
-    let obj = Builder::from("lol".to_string()).build();
+    let obj = Builder::from("test_string".to_string()).build();
     assert_eq!(obj.get_type(), Type::String);
 }
 
 #[test]
 fn from_str() {
-    let obj = Builder::from("lol").build();
+    let obj = Builder::from("test_string").build();
     assert_eq!(obj.get_type(), Type::String);
 }
 
@@ -38,8 +38,8 @@ fn to_int() {
 
 #[test]
 fn to_string() {
-    let obj = Builder::from("lol").build();
-    assert_eq!(obj.as_string(), Some("lol".to_string()));
+    let obj = Builder::from("test_string").build();
+    assert_eq!(obj.as_string(), Some("test_string".to_string()));
 }
 
 #[test]

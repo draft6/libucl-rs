@@ -1,9 +1,9 @@
 use libucl_sys::*;
 
-use utils;
 use super::Object;
 
 use std::convert::From;
+use std::ffi::CString;
 
 /// Build element object.
 ///
@@ -14,7 +14,7 @@ pub struct Builder {
 }
 
 impl Builder {
-    /// Create new `Object` form raw pointer. Internal use only.
+    /// Create new `Object` from raw pointer. Internal use only.
     pub fn from_ptr(obj: *mut ucl_object_t) -> Option<Self> {
         if !obj.is_null() {
             Some(Builder {
@@ -37,11 +37,20 @@ impl Into<Object> for Builder {
 }
 
 macro_rules! from_primitive {
-    ($from: ty => $ctype: ident, $func: ident) => {
+    ($from: ty => $type: ident, $func: ident) => {
         impl From<$from> for Builder {
             fn from(val: $from) -> Self {
-                use libc;
-                Builder::from_ptr(unsafe { $func(val as libc::$ctype) }).unwrap()
+                //use libc;
+                Builder::from_ptr(unsafe { $func(val as $type) }).unwrap()
+            }
+        }
+    };
+
+    ($from: ty => $primitive: ty, $func: ident) => {
+        impl From<$from> for Builder {
+            fn from(val: $from) -> Self {
+                //use libc;
+                Builder::from_ptr(unsafe { $func(val as $primitive) }).unwrap()
             }
         }
     };
@@ -55,17 +64,19 @@ macro_rules! from_primitive {
     }
 }
 
-from_primitive!(i64 => int64_t, ucl_object_fromint);
-from_primitive!(f64 => c_double, ucl_object_fromdouble);
+from_primitive!(i64 => i64, ucl_object_fromint);
+from_primitive!(f64 => libc::c_double, ucl_object_fromdouble);
 from_primitive!(bool, ucl_object_frombool);
 
 impl From<String> for Builder {
     fn from(val: String) -> Self {
-        use libc;
-        use libucl_sys::ucl_object_fromlstring;
+        //use libc;
+        //use libucl_sys::ucl_object_fromlstring;
 
         let len = val.len();
-        Builder::from_ptr(unsafe { ucl_object_fromlstring(utils::to_c_str(val), len as libc::size_t) }).unwrap()
+        let s = CString::new(val).unwrap();
+        let p = s.as_ptr();
+        Builder::from_ptr(unsafe { ucl_object_fromlstring(p, len as libc::size_t) }).unwrap()
     }
 }
 

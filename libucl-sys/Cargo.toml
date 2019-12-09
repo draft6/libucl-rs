@@ -12,6 +12,5 @@ name = "libucl_sys"
 path = "lib.rs"
 
 [dependencies]
-libc = "*"
-bitflags = "*"
-curl-sys = "*"
+libc = "0.2.66"
+bitflags = "1.2"

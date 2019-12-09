@@ -1,9 +1,7 @@
 #![allow(non_camel_case_types)]
-#![allow(raw_pointer_derive)]
 
 extern crate libc;
 #[macro_use] extern crate bitflags;
-extern crate curl_sys;
 
 use libc::{
     c_char,
@@ -12,10 +10,7 @@ use libc::{
     c_uint,
     c_uchar,
     c_void,
-    int64_t,
-    size_t,
-    uint16_t,
-    uint32_t,
+    size_t
 };
 
 #[repr(C)]
@@ -56,62 +51,62 @@ pub enum ucl_emitter {
 
 bitflags! {
 #[repr(C)]
-    flags ucl_parser_flags_t: c_int {
-        const UCL_PARSER_DEFAULT = 0x0,
-        const UCL_PARSER_KEY_LOWERCASE = 0x1,
-        const UCL_PARSER_ZEROCOPY = 0x2,
-        const UCL_PARSER_NO_TIME = 0x4,
-        const UCL_PARSER_NO_IMPLICIT_ARRAYS = 0x8
+    pub struct ucl_parser_flags_t: c_int {
+        const UCL_PARSER_DEFAULT = 0x0;
+        const UCL_PARSER_KEY_LOWERCASE = 0x1;
+        const UCL_PARSER_ZEROCOPY = 0x2;
+        const UCL_PARSER_NO_TIME = 0x4;
+        const UCL_PARSER_NO_IMPLICIT_ARRAYS = 0x8;
     }
 }
 
 bitflags! {
 #[repr(C)]
-    flags ucl_string_flags_t : c_int {
-        const UCL_STRING_RAW = 0x0,
-        const UCL_STRING_ESCAPE = 0x1,
-        const UCL_STRING_TRIM = 0x2,
-        const UCL_STRING_PARSE_BOOLEAN = 0x4,
-        const UCL_STRING_PARSE_INT = 0x8,
-        const UCL_STRING_PARSE_DOUBLE = 0x10,
-        const UCL_STRING_PARSE_TIME = 0x20,
-        const UCL_STRING_PARSE_NUMBER = UCL_STRING_PARSE_INT.bits
-            | UCL_STRING_PARSE_DOUBLE.bits
-            | UCL_STRING_PARSE_TIME.bits,
-        const UCL_STRING_PARSE = UCL_STRING_PARSE_BOOLEAN.bits
-            | UCL_STRING_PARSE_NUMBER.bits,
-        const UCL_STRING_PARSE_BYTES = 0x40
+    pub struct ucl_string_flags_t : c_int {
+        const UCL_STRING_RAW = 0x0;
+        const UCL_STRING_ESCAPE = 0x1;
+        const UCL_STRING_TRIM = 0x2;
+        const UCL_STRING_PARSE_BOOLEAN = 0x4;
+        const UCL_STRING_PARSE_INT = 0x8;
+        const UCL_STRING_PARSE_DOUBLE = 0x10;
+        const UCL_STRING_PARSE_TIME = 0x20;
+        const UCL_STRING_PARSE_NUMBER = Self::UCL_STRING_PARSE_INT.bits
+            | Self::UCL_STRING_PARSE_DOUBLE.bits
+            | Self::UCL_STRING_PARSE_TIME.bits;
+        const UCL_STRING_PARSE = Self::UCL_STRING_PARSE_BOOLEAN.bits
+            | Self::UCL_STRING_PARSE_NUMBER.bits;
+        const UCL_STRING_PARSE_BYTES = 0x40;
     }
 }
 
 bitflags! {
 #[repr(C)]
-    flags ucl_object_flags_t: c_int {
-        const UCL_OBJECT_ALLOCATED_KEY = 0x1,
-        const UCL_OBJECT_ALLOCATED_VALUE = 0x2,
-        const UCL_OBJECT_NEED_KEY_ESCAPE = 0x4,
-        const UCL_OBJECT_EPHEMERAL = 0x8,
-        const UCL_OBJECT_MULTILINE = 0x10,
-        const UCL_OBJECT_MULTIVALUE = 0x20
+    pub struct ucl_object_flags_t: c_int {
+        const UCL_OBJECT_ALLOCATED_KEY = 0x1;
+        const UCL_OBJECT_ALLOCATED_VALUE = 0x2;
+        const UCL_OBJECT_NEED_KEY_ESCAPE = 0x4;
+        const UCL_OBJECT_EPHEMERAL = 0x8;
+        const UCL_OBJECT_MULTILINE = 0x10;
+        const UCL_OBJECT_MULTIVALUE = 0x20;
     }
 }
 
 #[repr(C)]
 pub struct ucl_object_t {
-    value: int64_t,
+    value: i64,
     pub key: *const c_char,
     pub next: *mut ucl_object_t,
     pub prev: *mut ucl_object_t,
-    pub keylen: uint32_t,
-    pub len: uint32_t,
-    pub rc: uint32_t,
-    pub flags: uint16_t,
-    pub real_type: uint16_t,
+    pub keylen: u32,
+    pub len: u32,
+    pub rc: u32,
+    pub flags: u16,
+    pub real_type: u16,
     pub trash_stack: [*const c_char; 2]
 }
 
 impl ucl_object_t {
-    pub unsafe fn iv(&self) -> int64_t { self.value }
+    pub unsafe fn iv(&self) -> i64 { self.value }
     pub unsafe fn sv(&self) -> *const c_char { std::mem::transmute(self.value) }
     pub unsafe fn dv(&self) -> c_double { std::mem::transmute(self.value) }
     pub unsafe fn av(&self) -> *mut c_void { std::mem::transmute(self.value) }
@@ -132,7 +127,7 @@ pub struct ucl_parser;
 pub struct ucl_emitter_functions {
     ucl_emitter_append_character: extern fn(c_uchar, size_t, *mut c_void) -> c_int,
     ucl_emitter_append_len: extern fn(*const c_uchar, size_t, *mut c_void) -> c_int,
-    ucl_emitter_append_int: extern fn(int64_t, *mut c_void) -> c_int,
+    ucl_emitter_append_int: extern fn(i64, *mut c_void) -> c_int,
     ucl_emitter_append_double: extern fn(c_double, *mut c_void) -> c_int,
     ucl_emitter_free_func: extern fn(*mut c_void),
     ud: *mut c_void
@@ -177,6 +172,7 @@ pub struct ucl_schema_error {
     obj: *const ucl_object_t
 }
 
+#[allow(improper_ctypes)]
 extern {
     // Parser functions
     pub fn ucl_parser_new(flags: c_int) -> *mut ucl_parser;
@@ -222,8 +218,8 @@ extern {
     pub fn ucl_object_toboolean_safe(obj: *const ucl_object_t, target: *mut bool) -> bool;
     pub fn ucl_object_todouble(obj: *const ucl_object_t) -> c_double;
     pub fn ucl_object_todouble_safe (obj: *const ucl_object_t, target: *mut c_double) -> bool;
-    pub fn ucl_object_toint(obj: *const ucl_object_t) -> int64_t;
-    pub fn ucl_object_toint_safe(obj: *const ucl_object_t, target: *mut int64_t) -> bool;
+    pub fn ucl_object_toint(obj: *const ucl_object_t) -> i64;
+    pub fn ucl_object_toint_safe(obj: *const ucl_object_t, target: *mut i64) -> bool;
     pub fn ucl_object_tolstring(obj: *const ucl_object_t) -> *const c_char;
     pub fn ucl_object_tostring(obj: *const ucl_object_t) -> *const c_char;
     pub fn ucl_object_tostring_forced(obj: *const ucl_object_t) -> *const c_char;
@@ -235,7 +231,7 @@ extern {
     pub fn ucl_object_new_full(val: ucl_type_t, prio: c_uint) -> *mut ucl_object_t;
     pub fn ucl_object_typed_new(val: ucl_type_t) -> *mut ucl_object_t;
     pub fn ucl_object_new_userdata(dtor: ucl_userdata_dtor, emitter: ucl_userdata_emitter) -> *mut ucl_object_t;
-    pub fn ucl_object_fromint(val: int64_t) -> *mut ucl_object_t;
+    pub fn ucl_object_fromint(val: i64) -> *mut ucl_object_t;
     pub fn ucl_object_fromdouble(val: c_double) -> *mut ucl_object_t;
     pub fn ucl_object_frombool(val: bool) -> *mut ucl_object_t;
     pub fn ucl_object_fromstring(val: *const c_char) -> *mut ucl_object_t;
@@ -278,9 +274,9 @@ extern {
     pub fn ucl_object_iterate_free(it: ucl_object_iter_t);
 
     // UCL_EXTERN ucl_object_t * ucl_elt_append (ucl_object_t *head,
-    pub fn ucl_object_find_key(obj: *const ucl_object_t, key: *const c_char) -> *const ucl_object_t;
+    pub fn ucl_object_lookup(obj: *const ucl_object_t, key: *const c_char) -> *const ucl_object_t;
     // UCL_EXTERN const ucl_object_t* ucl_object_find_keyl (const ucl_object_t *obj,
-    pub fn ucl_lookup_path(obj: *const ucl_object_t, path: *const c_char) -> *const ucl_object_t;
+    pub fn ucl_object_lookup_path(obj: *const ucl_object_t, path: *const c_char) -> *const ucl_object_t;
     // UCL_EXTERN const ucl_object_t *ucl_lookup_path_char (const ucl_object_t *obj,
     pub fn ucl_object_key (obj: *const ucl_object_t) -> *const c_char;
     pub fn ucl_object_keyl(obj: *const ucl_object_t, len: *mut size_t) -> *const c_char;

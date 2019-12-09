@@ -6,6 +6,7 @@ pub use self::emitter::Emitter;
 use utils;
 
 use std::convert::From;
+use std::ffi::CString;
 use std::fmt;
 
 pub mod types;
@@ -63,7 +64,7 @@ impl Object {
     /// assert_eq!(obj.as_int(), None);
     /// ```
     pub fn as_int(&self) -> Option<i64> {
-        use libucl_sys::ucl_object_toint_safe;
+        //use libucl_sys::ucl_object_toint_safe;
 
         if self.get_type() != Type::Int { return None }
 
@@ -91,7 +92,7 @@ impl Object {
     /// assert_eq!(obj.as_float(), None);
     /// ```
     pub fn as_float(&self) -> Option<f64> {
-        use libucl_sys::ucl_object_todouble_safe;
+        //use libucl_sys::ucl_object_todouble_safe;
 
         if self.get_type() != Type::Float { return None }
 
@@ -119,7 +120,7 @@ impl Object {
     /// assert_eq!(obj.as_bool(), None);
     /// ```
     pub fn as_bool(&self) -> Option<bool> {
-        use libucl_sys::ucl_object_toboolean_safe;
+        //use libucl_sys::ucl_object_toboolean_safe;
 
         if self.get_type() != Type::Boolean { return None }
 
@@ -147,10 +148,9 @@ impl Object {
     /// assert_eq!(obj.as_string(), None);
     /// ```
     pub fn as_string(&self) -> Option<String> {
-        use libucl_sys::ucl_object_tostring;
+        //use libucl_sys::ucl_object_tostring;
 
         if self.get_type() != Type::String { return None }
-
         unsafe {
             let out = ucl_object_tostring(self.obj);
 
@@ -167,12 +167,13 @@ impl Object {
     /// assert_eq!(obj.fetch("a").unwrap().as_string(), Some("b".to_string()));
     /// ```
     pub fn fetch<T: AsRef<str>>(&self, key: T) -> Option<Object> {
-        use libucl_sys::ucl_object_find_key;
+        //use libucl_sys::ucl_object_lookup;
 
         if self.get_type() != Type::Object { return None }
 
+        let k = CString::new(key.as_ref()).unwrap();
         unsafe {
-            let out = ucl_object_find_key(self.obj, utils::to_c_str(key.as_ref()));
+            let out = ucl_object_lookup(self.obj, k.as_ptr());
 
             Object::from_cptr(out)
         }
@@ -187,12 +188,13 @@ impl Object {
     /// assert_eq!(obj.fetch_path("a.b").unwrap().as_string(), Some("c".to_string()));
     /// ```
     pub fn fetch_path<T: AsRef<str>>(&self, path: T) -> Option<Object> {
-        use libucl_sys::ucl_lookup_path;
+        //use libucl_sys::ucl_object_lookup_path;
 
         if self.get_type() != Type::Object { return None }
 
+        let p = CString::new(path.as_ref()).unwrap();
         unsafe {
-            let out = ucl_lookup_path(self.obj, utils::to_c_str(path.as_ref()));
+            let out = ucl_object_lookup_path(self.obj, p.as_ptr());
 
             Object::from_cptr(out)
         }

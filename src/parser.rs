@@ -10,14 +10,15 @@ use object::{
 };
 
 use std::path::Path;
+use std::ffi::CString;
 
 bitflags! {
-    flags Flags: i32 {
-        const DEFAULT            = 0x0,
-        const LOWERCASE          = 0x1,
-        const ZEROCOPY           = 0x2,
-        const NO_TIME            = 0x4,
-        const NO_IMPLICIT_ARRAYS = 0x8
+    pub struct Flags: i32 {
+        const DEFAULT            = 0x0;
+        const LOWERCASE          = 0x1;
+        const ZEROCOPY           = 0x2;
+        const NO_TIME            = 0x4;
+        const NO_IMPLICIT_ARRAYS = 0x8;
     }
 }
 
@@ -28,7 +29,7 @@ pub struct Parser {
 impl Parser {
     /// Create new parser instance with default options
     pub fn new() -> Self {
-        Self::with_flags(DEFAULT)
+        Self::with_flags(Flags::DEFAULT)
     }
 
     /// Create new parser with given option flags
@@ -45,7 +46,7 @@ impl Parser {
     /// # Examples
     ///
     /// ```rust
-    /// let parser = ucl::Parser::with_flags(ucl::parser::LOWERCASE);
+    /// let parser = ucl::Parser::with_flags(ucl::parser::Flags::LOWERCASE);
     /// let doc = parser.parse("A = b").unwrap();
     ///
     /// assert!(doc.fetch("a").is_some());
@@ -68,7 +69,8 @@ impl Parser {
     /// ```
     pub fn parse<T: AsRef<str>>(mut self, string: T) -> Result<Object> {
         let len = string.as_ref().len() as size_t;
-        let result = unsafe { ucl_parser_add_chunk(self.parser, utils::to_c_str(string), len) };
+        let s = CString::new(string.as_ref()).unwrap();
+        let result = unsafe { ucl_parser_add_chunk(self.parser, s.as_ptr(), len) };
 
         if result {
             Ok(self.get_object().unwrap())
@@ -82,7 +84,8 @@ impl Parser {
     /// It moves out `Parser`.
     pub fn parse_file<T: AsRef<Path>>(mut self, path: T) -> Result<Object> {
         let filename = path.as_ref().to_str().unwrap();
-        let result = unsafe { ucl_parser_add_file(self.parser, utils::to_c_str(filename)) };
+        let s = CString::new(filename).unwrap();
+        let result = unsafe { ucl_parser_add_file(self.parser, s.as_ptr()) };
 
         if result {
             Ok(self.get_object().unwrap())
@@ -103,8 +106,10 @@ impl Parser {
     /// assert_eq!(res.fetch("lol").unwrap().as_string(), Some("test".to_string()));
     /// ```
     pub fn register_var(&self, name: String, value: String) {
+        let n = CString::new(name).unwrap();
+        let v = CString::new(value).unwrap();
         unsafe {
-            ucl_parser_register_variable(self.parser, utils::to_c_str(name), utils::to_c_str(value))
+            ucl_parser_register_variable(self.parser, n.as_ptr(), v.as_ptr())
         }
     }
 
@@ -133,7 +138,7 @@ mod test {
     #[test]
     fn string_parsing() {
         let p = Parser::new();
-        let s = r#"lol = "lol""#;
+        let s = r#"test_string = "test_string""#;
 
         assert!(p.parse(s).is_ok());
     }
@@ -149,24 +154,24 @@ mod test {
     #[test]
     fn key_fetching() {
         let p = Parser::new();
-        let s = r#"lol = 10"#;
+        let s = r#"test_var = 10"#;
         let res = p.parse(s).unwrap();
 
-        assert_eq!(res.fetch("lol").unwrap().as_int(), Some(10));
+        assert_eq!(res.fetch("test_var").unwrap().as_int(), Some(10));
     }
 
     #[test]
     fn flags() {
-        let s = r#"LoL = 10"#;
-        let p = Parser::with_flags(DEFAULT);
+        let s = r#"test_Var = 10"#;
+        let p = Parser::with_flags(Flags::DEFAULT);
         let res = p.parse(s).unwrap();
 
-        assert!(res.fetch("lol").is_none());
+        assert!(res.fetch("test_var").is_none());
 
-        let p = Parser::with_flags(LOWERCASE);
+        let p = Parser::with_flags(Flags::LOWERCASE);
         let res = p.parse(s).unwrap();
 
-        assert_eq!(res.fetch("lol").unwrap().as_int(), Some(10));
+        assert_eq!(res.fetch("test_var").unwrap().as_int(), Some(10));
     }
 
     #[test]

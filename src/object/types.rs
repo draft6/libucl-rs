@@ -14,8 +14,8 @@ pub enum Type {
 }
 
 impl From<ucl_type_t> for Type {
-    fn from(typ: ucl_type_t) -> Self {
-        match typ {
+    fn from(t: ucl_type_t) -> Self {
+        match t {
             ucl_type_t::UCL_OBJECT   => Type::Object,
             ucl_type_t::UCL_ARRAY    => Type::Array,
             ucl_type_t::UCL_INT      => Type::Int,
