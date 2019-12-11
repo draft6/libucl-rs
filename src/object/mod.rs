@@ -7,6 +7,7 @@ use utils;
 
 use std::convert::From;
 use std::ffi::CString;
+
 use std::fmt;
 
 pub mod types;
@@ -22,6 +23,7 @@ mod test;
 /// `Type` elements and can be cast only to given type.
 pub struct Object {
     obj: *const ucl_object_t,
+    it: *mut ucl_object_iter_t,
     typ: Type
 }
 
@@ -31,6 +33,7 @@ impl Object {
         if !obj.is_null() {
             Some(Object {
                 obj: obj,
+                it: 0 as *mut ucl_object_iter_t,
                 typ: Type::from(unsafe { ucl_object_type(obj) })
             })
         } else {
@@ -198,6 +201,24 @@ impl Object {
 
             Object::from_cptr(out)
         }
+    }
+}
+
+impl Iterator for Object {
+    // next() is the only required method
+    type Item = super::Object;
+    fn next(&mut self) -> Option<Self::Item> {
+
+        if self.typ != Type::Array {
+            return None
+        }
+
+        let cur: *const ucl_object_t = unsafe { ucl_iterate_object (self.obj, self.it, true) };
+        if cur.is_null() {
+            return None
+        }
+
+        super::Object::from_cptr(cur)
     }
 }
 

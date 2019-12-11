@@ -47,3 +47,21 @@ fn to_int_invalid_type() {
     let obj = Builder::from(10.0f64).build();
     assert_eq!(obj.as_int(), None);
 }
+
+#[test]
+fn parse_array_and_iter() {
+    let parser = ::Parser::new();
+    let result = parser.parse(r#"name = "mort";
+section {
+    nice = true;
+    server = ["http://localhost:6666", "trtMrtBrt"];
+    chunk = 1Gb;
+}"#).unwrap();
+
+    result.fetch_path("section.server").and_then(|values| { 
+        for obj in values.next() {
+            println!("{:?}", obj.as_string());
+        }
+    });
+    assert_eq!(true, true);
+}

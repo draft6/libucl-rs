@@ -13,7 +13,7 @@ unstable = [] # in case of nightly build
 
 [dependencies]
 libc = "0.2.66"
-bitflags = "*"
+bitflags = "1.2"
 
 [dependencies.libucl-sys]
 path = "libucl-sys"
