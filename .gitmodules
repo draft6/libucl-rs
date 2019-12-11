@@ -1,4 +1,4 @@
 [submodule "libucl"]
 	path = libucl-sys/libucl
-	url = git@github.com:draft6/libucl.git
+	url = https://github.com/draft6/libucl.git
 	ignore = dirty
