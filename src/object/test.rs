@@ -54,14 +54,21 @@ fn parse_array_and_iter() {
     let result = parser.parse(r#"name = "mort";
 section {
     nice = true;
-    server = ["http://localhost:6666", "trtMrtBrt"];
+    server = ["http://localhost:6666", "testStr"];
     chunk = 1Gb;
 }"#).unwrap();
+    let val = result.fetch_path("section.server");
+    assert!(val.is_some());
 
-    result.fetch_path("section.server").and_then(|val| {
-        for obj in val {
-            println!("{:?}", obj.as_string());
-        }
-    });
-    assert_eq!(true, true);
+    let mut obj = val.unwrap();
+    assert_eq!(obj.typ == Type::Array, true);
+    assert_eq!(&obj.next().unwrap().as_string().unwrap(), "http://localhost:6666");
+    assert_eq!(&obj.next().unwrap().as_string().unwrap(), "testStr");
+    assert_eq!(obj.next().is_none(), true);
+
+    let val = result.fetch_path("section.server").unwrap();
+    for o in val {
+        assert_ne!(o.as_string(), None);
+    }
+
 }

@@ -23,7 +23,7 @@ mod test;
 /// `Type` elements and can be cast only to given type.
 pub struct Object {
     obj: *const ucl_object_t,
-    it: *mut ucl_object_iter_t,
+    it:  ucl_object_iter_t,
     typ: Type
 }
 
@@ -33,7 +33,7 @@ impl Object {
         if !obj.is_null() {
             Some(Object {
                 obj: obj,
-                it: 0 as *mut ucl_object_iter_t,
+                it: std::ptr::null_mut(),
                 typ: Type::from(unsafe { ucl_object_type(obj) })
             })
         } else {
@@ -209,11 +209,15 @@ impl Iterator for Object {
     type Item = super::Object;
     fn next(&mut self) -> Option<Self::Item> {
 
+        if self.it.is_null() {
+           self.it = unsafe { ucl_object_iterate_new(self.obj) }
+        }
+
         if self.typ != Type::Array {
             return None
         }
 
-        let cur = unsafe { ucl_iterate_object (self.obj, self.it, true) };
+        let cur = unsafe { ucl_object_iterate_safe (self.it, true) };
         if cur.is_null() {
             return None
         }
@@ -221,6 +225,17 @@ impl Iterator for Object {
         super::Object::from_cptr(cur)
     }
 }
+
+// TODO: Need to implement proper lifetime management and cleanup
+//impl Drop for Object {
+//    fn drop(&mut self) {
+//        unsafe {
+//           if !self.it.is_null()  { ucl_object_iterate_free (self.it); }
+//           if !self.obj.is_null()  { ucl_object_unref (self.obj as *mut ucl_object_t); }
+//        }
+//    }
+//}
+
 
 impl AsRef<Object> for Object {
     fn as_ref(&self) -> &Self { self }

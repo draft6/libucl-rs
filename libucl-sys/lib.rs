@@ -267,7 +267,7 @@ extern {
     // UCL_EXTERN unsigned int ucl_array_index_of (ucl_object_t *top,
 
     // Iteration functions
-    pub fn ucl_iterate_object(obj: *const ucl_object_t, iter: *mut ucl_object_iter_t, expand_values: bool) -> *const ucl_object_t;
+    pub fn ucl_object_iterate_with_error(obj: *const ucl_object_t, iter: *mut ucl_object_iter_t, expand_values: bool, err_ptr: *mut c_int) -> *const ucl_object_t;
     pub fn ucl_object_iterate_new(obj: *const ucl_object_t) -> ucl_object_iter_t;
     pub fn ucl_object_iterate_reset(it: ucl_object_iter_t, obj: *const ucl_object_t) -> ucl_object_iter_t;
     pub fn ucl_object_iterate_safe(iter: ucl_object_iter_t, expand_values: bool) -> *const ucl_object_t;
