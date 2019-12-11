@@ -1,19 +1,22 @@
 # Rust wrapper around [libucl][libucl]
 
+[![MIT Licensed](https://img.shields.io/badge/Licence-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
 ## Usage
 
 ```rust
-use ucl::Parser;
+use libucl::Parser;
 
 let parser = Parser::new();
-let result = parser.parse(r#"name = "mort";
-section {
-    nice = true;
-    server = "http://localhost:6666";
-    chunk = 1Gb;
+let result = parser.parse(r#"tag = "svc";
+upstream {
+    h2c = true;
+    host = "http://localhost";
+    port = 9090;
+    connect_timeout = 1s;
 }"#).unwrap();
 
-println!("{}", result.fetch_path("section.nice").and_then(|v| v.as_bool()));
+println!("{}", result.fetch_path("upstream.h2c").and_then(|v| v.as_bool()));
 ```
 
 ## Licence
