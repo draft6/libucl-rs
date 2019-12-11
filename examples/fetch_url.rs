@@ -1,7 +1,7 @@
-extern crate ucl;
+extern crate libucl;
 
 fn main() {
-    let parser = ucl::Parser::new();
+    let parser = libucl::Parser::new();
 
     let config = match parser.parse_file("examples/include.conf") {
         Ok(conf) => conf,

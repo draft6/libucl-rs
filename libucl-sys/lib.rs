@@ -161,7 +161,7 @@ pub enum ucl_schema_error_code {
     UCL_SCHEMA_INVALID_SCHEMA,
     UCL_SCHEMA_MISSING_PROPERTY,
     UCL_SCHEMA_CONSTRAINT,
-    UCL_SCHEMA_MISSING_DEPENENCY,
+    UCL_SCHEMA_MISSING_DEPENDENCY,
     UCL_SCHEMA_UNKNOWN
 }
 
@@ -281,7 +281,6 @@ extern {
     pub fn ucl_object_key (obj: *const ucl_object_t) -> *const c_char;
     pub fn ucl_object_keyl(obj: *const ucl_object_t, len: *mut size_t) -> *const c_char;
     pub fn ucl_object_ref(obj: *const ucl_object_t) -> *mut ucl_object_t;
-    // UCL_DEPRECATED(UCL_EXTERN void ucl_object_free (ucl_object_t *obj));
     pub fn ucl_object_unref(obj: *mut ucl_object_t);
     // UCL_EXTERN int ucl_object_compare (const ucl_object_t *o1,
     // UCL_EXTERN void ucl_object_array_sort (ucl_object_t *ar,

@@ -1,4 +1,4 @@
-extern crate ucl;
+extern crate libucl;
 
 static DOC: &'static str = r#"
 param = value;
@@ -19,7 +19,7 @@ section {
 "#;
 
 fn main() {
-    let parser = ucl::Parser::new();
+    let parser = libucl::Parser::new();
     let doc = parser.parse(DOC).unwrap();
 
     println!("{:?}", doc);

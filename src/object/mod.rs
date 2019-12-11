@@ -60,10 +60,10 @@ impl Object {
     /// # Examples
     ///
     /// ```rust
-    /// let obj = ucl::object::Builder::from(10).build();
+    /// let obj = libucl::object::Builder::from(10).build();
     /// assert_eq!(obj.as_int(), Some(10));
     ///
-    /// let obj = ucl::object::Builder::from("lol").build();
+    /// let obj = libucl::object::Builder::from("test_string").build();
     /// assert_eq!(obj.as_int(), None);
     /// ```
     pub fn as_int(&self) -> Option<i64> {
@@ -88,14 +88,13 @@ impl Object {
     /// # Examples
     ///
     /// ```rust
-    /// let obj = ucl::object::Builder::from(10f64).build();
+    /// let obj = libucl::object::Builder::from(10f64).build();
     /// assert_eq!(obj.as_float(), Some(10.0));
     ///
-    /// let obj = ucl::object::Builder::from("lol").build();
+    /// let obj = libucl::object::Builder::from("test_string").build();
     /// assert_eq!(obj.as_float(), None);
     /// ```
     pub fn as_float(&self) -> Option<f64> {
-        //use libucl_sys::ucl_object_todouble_safe;
 
         if self.get_type() != Type::Float { return None }
 
@@ -116,14 +115,13 @@ impl Object {
     /// # Examples
     ///
     /// ```rust
-    /// let obj = ucl::object::Builder::from(true).build();
+    /// let obj = libucl::object::Builder::from(true).build();
     /// assert_eq!(obj.as_bool(), Some(true));
     ///
-    /// let obj = ucl::object::Builder::from(10).build();
+    /// let obj = libucl::object::Builder::from(10).build();
     /// assert_eq!(obj.as_bool(), None);
     /// ```
     pub fn as_bool(&self) -> Option<bool> {
-        //use libucl_sys::ucl_object_toboolean_safe;
 
         if self.get_type() != Type::Boolean { return None }
 
@@ -144,14 +142,13 @@ impl Object {
     /// # Examples
     ///
     /// ```rust
-    /// let obj = ucl::object::Builder::from("lol").build();
-    /// assert_eq!(obj.as_string(), Some("lol".to_string()));
+    /// let obj = libucl::object::Builder::from("test_string").build();
+    /// assert_eq!(obj.as_string(), Some("test_string".to_string()));
     ///
-    /// let obj = ucl::object::Builder::from(10).build();
+    /// let obj = libucl::object::Builder::from(10).build();
     /// assert_eq!(obj.as_string(), None);
     /// ```
     pub fn as_string(&self) -> Option<String> {
-        //use libucl_sys::ucl_object_tostring;
 
         if self.get_type() != Type::String { return None }
         unsafe {
@@ -166,7 +163,7 @@ impl Object {
     /// # Examples
     ///
     /// ```rust
-    /// let obj = ucl::Parser::new().parse("a = b;").unwrap();
+    /// let obj = libucl::Parser::new().parse("a = b;").unwrap();
     /// assert_eq!(obj.fetch("a").unwrap().as_string(), Some("b".to_string()));
     /// ```
     pub fn fetch<T: AsRef<str>>(&self, key: T) -> Option<Object> {
@@ -187,11 +184,10 @@ impl Object {
     /// # Examples
     ///
     /// ```rust
-    /// let obj = ucl::Parser::new().parse("a = { b = c; }").unwrap();
+    /// let obj = libucl::Parser::new().parse("a = { b = c; }").unwrap();
     /// assert_eq!(obj.fetch_path("a.b").unwrap().as_string(), Some("c".to_string()));
     /// ```
     pub fn fetch_path<T: AsRef<str>>(&self, path: T) -> Option<Object> {
-        //use libucl_sys::ucl_object_lookup_path;
 
         if self.get_type() != Type::Object { return None }
 
@@ -205,8 +201,8 @@ impl Object {
 }
 
 impl Iterator for Object {
-    // next() is the only required method
     type Item = super::Object;
+
     fn next(&mut self) -> Option<Self::Item> {
 
         if self.it.is_null() {

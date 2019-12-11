@@ -1,11 +1,11 @@
 [package]
-name = "ucl"
-version = "0.1.4"
-description = "Rust bindings to libucl"
-documentation = "http://lukasz.niemier.pl/ucl-rs"
-authors = ["Łukasz Niemier <lukasz@niemier.pl>"]
+name = "libucl"
+version = "0.2.0"
+description = "Rust wrapper with bindings to libucl"
+documentation = ""
+authors = ["Łukasz Niemier <lukasz@niemier.pl>", "Igor Laćarac <draftsix@gmail.com>"]
 license = "MIT"
-repository = "https://github.com/hauleth/ucl-rs"
+repository = "https://github.com/draft6/libucl-rs"
 
 [features]
 default = []

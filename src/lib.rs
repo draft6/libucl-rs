@@ -82,7 +82,7 @@
 //! }
 //! "#;
 //!
-//! let parser = ucl::Parser::new();
+//! let parser = libucl::Parser::new();
 //! let document = parser.parse(DOC).unwrap();
 //!
 //! assert_eq!(document.fetch("param").unwrap().as_string(), Some("value".to_string()));

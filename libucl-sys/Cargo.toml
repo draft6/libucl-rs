@@ -1,11 +1,11 @@
 [package]
 name = "libucl-sys"
-version = "0.1.5"
+version = "0.2.0"
 description = "Low-level bindings to libucl."
-authors = ["Łukasz Niemier <lukasz@niemier.pl>"]
+authors = ["Łukasz Niemier <lukasz@niemier.pl>", "Igor Laćarac <draftsix@gmail.com>"]
 build = "build.rs"
 license-file = "LICENSE"
-repository = "https://github.com/hauleth/libucl-sys"
+repository = "https://github.com/draft6/libucl-rs/libucl-sys"
 
 [lib]
 name = "libucl_sys"

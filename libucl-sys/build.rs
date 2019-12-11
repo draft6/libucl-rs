@@ -46,5 +46,5 @@ fn run(cmd: &mut Command, program: &str) {
 }
 
 fn fail(s: &str) -> ! {
-    panic!("\n{}\n\nbuild script failed, must exit now", s)
+    panic!("\n{}\n\nbuild script failed, exiting..", s)
 }

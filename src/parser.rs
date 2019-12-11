@@ -3,11 +3,13 @@ use libc::size_t;
 
 use utils;
 use error;
-use super::Result;
+
 use object::{
     self,
     Object
 };
+
+use super::Result;
 
 use std::path::Path;
 use std::ffi::CString;
@@ -46,7 +48,7 @@ impl Parser {
     /// # Examples
     ///
     /// ```rust
-    /// let parser = ucl::Parser::with_flags(ucl::parser::Flags::LOWERCASE);
+    /// let parser = libucl::Parser::with_flags(libucl::parser::Flags::LOWERCASE);
     /// let doc = parser.parse("A = b").unwrap();
     ///
     /// assert!(doc.fetch("a").is_some());
@@ -64,8 +66,8 @@ impl Parser {
     /// # Examples
     ///
     /// ```rust
-    /// assert!(ucl::Parser::new().parse("a = b").is_ok());
-    /// assert!(ucl::Parser::new().parse("a =").is_err());
+    /// assert!(libucl::Parser::new().parse("a = b").is_ok());
+    /// assert!(libucl::Parser::new().parse("a =").is_err());
     /// ```
     pub fn parse<T: AsRef<str>>(mut self, string: T) -> Result<Object> {
         let len = string.as_ref().len() as size_t;
@@ -99,11 +101,11 @@ impl Parser {
     /// # Examples
     ///
     /// ```rust
-    /// let p = ucl::Parser::new();
-    /// p.register_var("LOL".to_string(), "test".to_string());
-    /// let res = p.parse("lol = $LOL").unwrap();
+    /// let p = libucl::Parser::new();
+    /// p.register_var("someVar".to_string(), "test_string".to_string());
+    /// let res = p.parse("testVar = $someVar").unwrap();
     ///
-    /// assert_eq!(res.fetch("lol").unwrap().as_string(), Some("test".to_string()));
+    /// assert_eq!(res.fetch("testVar").unwrap().as_string(), Some("test_string".to_string()));
     /// ```
     pub fn register_var(&self, name: String, value: String) {
         let n = CString::new(name).unwrap();
@@ -183,4 +185,30 @@ mod test {
 
         assert_eq!(res.fetch("lol").unwrap().as_string(), Some("test".to_string()));
     }
+
+    #[test]
+    fn parse_array_and_iter() {
+        let parser = Parser::new();
+        let result = parser.parse(r#"name = "test_string";
+            section {
+                nice = true;
+                server = ["http://localhost:6666", "test_string"];
+                chunk = 1Gb;
+            }"#).unwrap();
+        let val = result.fetch_path("section.server");
+        assert!(val.is_some());
+
+        let mut obj = val.unwrap();
+        assert_eq!(obj.get_type() == object::Type::Array, true);
+        assert_eq!(obj.next().unwrap().as_string().unwrap(), "http://localhost:6666");
+        assert_eq!(obj.next().unwrap().as_string().unwrap(), "test_string");
+        assert_eq!(obj.next().is_none(), true);
+
+        let val = result.fetch_path("section.server").unwrap();
+        for o in val {
+            assert_ne!(o.as_string(), None);
+        }
+
+    }
+
 }
