@@ -1,6 +1,6 @@
 # Rust wrapper around [libucl][libucl]
 
-![Master build](https://github.com/draft6/libucl-rs/workflows/.github/workflows/master.yml/badge.svg)
+![](https://github.com/draft6/libucl-rs/workflows/.github/workflows/master.yml/badge.svg)
 [![MIT Licensed](https://img.shields.io/badge/Licence-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## Usage
