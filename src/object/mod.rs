@@ -213,7 +213,7 @@ impl Iterator for Object {
             return None
         }
 
-        let cur: *const ucl_object_t = unsafe { ucl_iterate_object (self.obj, self.it, true) };
+        let cur = unsafe { ucl_iterate_object (self.obj, self.it, true) };
         if cur.is_null() {
             return None
         }

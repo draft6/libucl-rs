@@ -7,14 +7,14 @@ fn main() {
     let src = PathBuf::from(&env::var("CARGO_MANIFEST_DIR").unwrap());
     let dst = PathBuf::from(&env::var("OUT_DIR").unwrap());
 
-    let mut cmd = Command::new("./autogen.sh");
+    let mut cmd = Command::new("autoreconf");
     cmd.current_dir(&src.join("libucl"));
+    run(cmd.arg("-i"), "autoreconf");
 
-    run(&mut cmd, "autogen.sh");
-
-    let mut cmd = Command::new("./configure");
+    let mut cmd = Command::new("/bin/bash");
     cmd
         .current_dir(&src.join("libucl"))
+        .arg("configure")
         .arg(&format!("--prefix={}", dst.display()));
     run(cmd.arg("--enable-regex")
            .arg("--disable-shared")

@@ -58,8 +58,8 @@ section {
     chunk = 1Gb;
 }"#).unwrap();
 
-    result.fetch_path("section.server").and_then(|values| { 
-        for obj in values.next() {
+    result.fetch_path("section.server").and_then(|val| {
+        for obj in val {
             println!("{:?}", obj.as_string());
         }
     });
