@@ -6,6 +6,7 @@ authors = ["Łukasz Niemier <lukasz@niemier.pl>", "Igor Laćarac <draftsix@gmail
 build = "build.rs"
 license-file = "LICENSE"
 repository = "https://github.com/draft6/libucl-rs/libucl-bind"
+exclude = ["libucl/lua/libucl.rockspec"]
 
 [dependencies]
 libc = "0.2.66"
