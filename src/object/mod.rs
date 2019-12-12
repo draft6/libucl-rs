@@ -6,7 +6,14 @@ pub use self::emitter::Emitter;
 use utils;
 
 use std::convert::From;
-use std::ffi::CString;
+use std::ffi::{
+    CString
+};
+use libc::{
+    c_void,
+    c_uchar,
+    c_double,
+};
 
 use std::fmt;
 
@@ -17,19 +24,82 @@ pub mod emitter;
 #[cfg(test)]
 mod test;
 
+// Helper functions
+extern fn append_char(c: c_uchar, _num_chars: usize, ptr: *mut c_void) -> libc::c_int {
+    assert!(!ptr.is_null());
+
+    unsafe {
+        let tmp = ptr as *mut String;
+        (*tmp).push(c as char);
+    }
+
+    0
+}
+
+extern fn append_len(c: *const c_uchar, len: usize, ptr: *mut c_void) -> libc::c_int {
+    assert!(!c.is_null());
+    assert!(!ptr.is_null());
+
+    unsafe {
+        let out = ptr as *mut String;
+        let slice = std::slice::from_raw_parts(c, len);
+        (*out).push_str(std::str::from_utf8(slice).unwrap());
+    }
+
+    0
+}
+
+extern fn append_int(i: i64, ptr: *mut c_void) -> libc::c_int {
+    assert!(!ptr.is_null());
+
+    unsafe {
+        let tmp = ptr as *mut String;
+        let tmp_str = i.to_string();
+        (*tmp).push_str(tmp_str.as_str());
+    }
+
+    0
+}
+
+extern fn append_double(d: c_double, ptr: *mut c_void) -> libc::c_int {
+    assert!(!ptr.is_null());
+
+    unsafe {
+        let tmp = ptr as *mut String;
+        let tmp_str = d.to_string();
+        (*tmp).push_str(tmp_str.as_str());
+    }
+
+    0
+}
+
 /// File element object.
 ///
 /// This structure is immutable typed reference to object inside parsed tree. It can be one of
 /// `Type` elements and can be cast only to given type.
 pub struct Object {
-    obj: *const ucl_object_t,
-    it:  ucl_object_iter_t,
+    obj: *mut ucl_object_t,
+    it: ucl_object_iter_t,
     typ: Type
 }
 
 impl Object {
-    /// Create new `Object` form const raw pointer. Internal use only.
+    /// Create new `Object` from const raw pointer. Internal use only.
     fn from_cptr(obj: *const ucl_object_t) -> Option<Self> {
+        if !obj.is_null() {
+            Some(Object {
+                obj: unsafe { ucl_object_ref (obj) },
+                it: std::ptr::null_mut(),
+                typ: Type::from(unsafe { ucl_object_type(obj) })
+            })
+        } else {
+            None
+        }
+    }
+
+    #[allow(dead_code)]
+    /// Create new `Object` from mut raw pointer and take ownership. Internal use only.
+    fn from_mut_cptr(obj: *mut ucl_object_t) -> Option<Self> {
         if !obj.is_null() {
             Some(Object {
                 obj: obj,
@@ -41,9 +111,60 @@ impl Object {
         }
     }
 
+    fn default_emit_funcs() -> ucl_emitter_functions {
+        ucl_emitter_functions {
+            ucl_emitter_append_character: Some(append_char),
+            ucl_emitter_append_len: Some(append_len),
+            ucl_emitter_append_int: Some(append_int),
+            ucl_emitter_append_double: Some(append_double),
+            ucl_emitter_free_func: None,
+            ud: std::ptr::null_mut(),
+        }
+    }
+
     // pub fn priority(&self) -> usize {
     //     unsafe { ucl_object_get_priority(self.obj) as usize }
     // }
+
+    pub fn dump_into(&self) {}
+
+    pub fn dump(&self) -> String {
+        let out: Box<String> = Box::new(String::new());
+        let mut emit = Self::default_emit_funcs();
+
+        unsafe {
+            emit.ud = std::mem::transmute::<Box<String>, *mut c_void>(out);
+            ucl_object_emit_full(self.obj, ucl_emitter_t::UCL_EMIT_JSON, &mut emit, std::ptr::null());
+            let out_final: Box<String> = std::mem::transmute(emit.ud);
+            return *out_final
+        }
+    }
+
+    pub fn size(&self) -> usize {
+        if self.typ == Type::Array {
+            return unsafe { ucl_array_size(self.obj) }
+        }
+
+        0
+    }
+
+    pub fn at(&self, i: usize) -> Option<Object> {
+        if self.typ == Type::Array {
+            unsafe {
+                let out = ucl_array_find_index(self.obj, i);
+
+                return Object::from_cptr(out)
+            }
+        }
+
+        None
+    }
+
+    pub fn iter_reset(&mut self) {
+        if !self.it.is_null() {
+            self.it = unsafe { ucl_object_iterate_reset(self.it, self.obj) }
+        }
+    }
 
     /// Return key assigned to object.
     pub fn key(&self) -> Option<String> {
@@ -67,7 +188,6 @@ impl Object {
     /// assert_eq!(obj.as_int(), None);
     /// ```
     pub fn as_int(&self) -> Option<i64> {
-        //use libucl_sys::ucl_object_toint_safe;
 
         if self.get_type() != Type::Int { return None }
 
@@ -222,16 +342,14 @@ impl Iterator for Object {
     }
 }
 
-// TODO: Need to implement proper lifetime management and cleanup
-//impl Drop for Object {
-//    fn drop(&mut self) {
-//        unsafe {
-//           if !self.it.is_null()  { ucl_object_iterate_free (self.it); }
-//           if !self.obj.is_null()  { ucl_object_unref (self.obj as *mut ucl_object_t); }
-//        }
-//    }
-//}
-
+impl Drop for Object {
+    fn drop(&mut self) {
+        unsafe {
+            if !self.it.is_null() { ucl_object_iterate_free(self.it); }
+            if !self.obj.is_null() { ucl_object_unref(self.obj); }
+        }
+    }
+}
 
 impl AsRef<Object> for Object {
     fn as_ref(&self) -> &Self { self }

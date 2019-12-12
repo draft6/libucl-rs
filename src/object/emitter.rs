@@ -19,24 +19,24 @@ impl Emitter {
     }
 }
 
-impl From<ucl_emitter> for Emitter {
-    fn from(raw: ucl_emitter) -> Self {
+impl From<ucl_emitter_t> for Emitter {
+    fn from(raw: ucl_emitter_t) -> Self {
         match raw {
-            ucl_emitter::UCL_EMIT_JSON         => Emitter::JSON,
-            ucl_emitter::UCL_EMIT_JSON_COMPACT => Emitter::JSONCompact,
-            ucl_emitter::UCL_EMIT_CONFIG       => Emitter::Config,
-            ucl_emitter::UCL_EMIT_YAML         => Emitter::YAML,
+            ucl_emitter_t::UCL_EMIT_JSON         => Emitter::JSON,
+            ucl_emitter_t::UCL_EMIT_JSON_COMPACT => Emitter::JSONCompact,
+            ucl_emitter_t::UCL_EMIT_CONFIG       => Emitter::Config,
+            ucl_emitter_t::UCL_EMIT_YAML         => Emitter::YAML,
         }
     }
 }
 
-impl Into<ucl_emitter> for Emitter {
-    fn into(self) -> ucl_emitter {
+impl Into<ucl_emitter_t> for Emitter {
+    fn into(self) -> ucl_emitter_t {
         match self {
-            Emitter::JSON        => ucl_emitter::UCL_EMIT_JSON,
-            Emitter::JSONCompact => ucl_emitter::UCL_EMIT_JSON_COMPACT,
-            Emitter::Config      => ucl_emitter::UCL_EMIT_CONFIG,
-            Emitter::YAML        => ucl_emitter::UCL_EMIT_YAML
+            Emitter::JSON        => ucl_emitter_t::UCL_EMIT_JSON,
+            Emitter::JSONCompact => ucl_emitter_t::UCL_EMIT_JSON_COMPACT,
+            Emitter::Config      => ucl_emitter_t::UCL_EMIT_CONFIG,
+            Emitter::YAML        => ucl_emitter_t::UCL_EMIT_YAML
         }
     }
 }

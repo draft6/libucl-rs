@@ -42,7 +42,7 @@ pub enum ucl_type_t {
 
 #[repr(C)]
 #[derive(Clone, Copy)]
-pub enum ucl_emitter {
+pub enum ucl_emitter_t {
     UCL_EMIT_JSON = 0,
     UCL_EMIT_JSON_COMPACT,
     UCL_EMIT_CONFIG,
@@ -121,16 +121,16 @@ pub type ucl_macro_handler = extern fn(*const c_uchar, size_t, *const ucl_object
 pub type ucl_variable_handler = extern fn(*const c_uchar, size_t, *mut *mut c_uchar, *mut size_t, *mut bool, *mut c_void) -> bool;
 
 #[repr(C)]
-pub struct ucl_parser;
+pub struct ucl_parser { _private: [u8; 0] }
 
 #[repr(C)]
 pub struct ucl_emitter_functions {
-    ucl_emitter_append_character: extern fn(c_uchar, size_t, *mut c_void) -> c_int,
-    ucl_emitter_append_len: extern fn(*const c_uchar, size_t, *mut c_void) -> c_int,
-    ucl_emitter_append_int: extern fn(i64, *mut c_void) -> c_int,
-    ucl_emitter_append_double: extern fn(c_double, *mut c_void) -> c_int,
-    ucl_emitter_free_func: extern fn(*mut c_void),
-    ud: *mut c_void
+    pub ucl_emitter_append_character: Option<extern fn(c_uchar, size_t, *mut c_void) -> c_int>,
+    pub ucl_emitter_append_len: Option<extern fn(*const c_uchar, size_t, *mut c_void) -> c_int>,
+    pub ucl_emitter_append_int: Option<extern fn(i64, *mut c_void) -> c_int>,
+    pub ucl_emitter_append_double: Option<extern fn(c_double, *mut c_void) -> c_int>,
+    pub ucl_emitter_free_func: Option<extern fn(*mut c_void)>,
+    pub ud: *mut c_void
 }
 
 #[repr(C)]
@@ -172,7 +172,6 @@ pub struct ucl_schema_error {
     obj: *const ucl_object_t
 }
 
-#[allow(improper_ctypes)]
 extern {
     // Parser functions
     pub fn ucl_parser_new(flags: c_int) -> *mut ucl_parser;
@@ -201,8 +200,8 @@ extern {
     pub fn ucl_pubkey_add(parser: *mut ucl_parser, key: *const c_char, len: size_t) -> bool;
 
     // Emit functions
-    pub fn ucl_object_emit(obj: *const ucl_object_t, emit_type: ucl_emitter) -> *mut c_char;
-    // pub fn ucl_object_emit_full(obj: *const ucl_object_t, emit_type: ucl_emitter, ) -> bool;
+    pub fn ucl_object_emit(obj: *const ucl_object_t, emit_type: ucl_emitter_t) -> *mut c_char;
+    pub fn ucl_object_emit_full(obj: *const ucl_object_t, emit_type: ucl_emitter_t, emitter: *mut ucl_emitter_functions, comments: *const ucl_object_t) -> bool;
     // UCL_EXTERN struct ucl_emitter_functions* ucl_object_emit_memory_funcs (
     // UCL_EXTERN struct ucl_emitter_functions* ucl_object_emit_file_funcs (
     // UCL_EXTERN struct ucl_emitter_functions* ucl_object_emit_fd_funcs (
@@ -259,11 +258,12 @@ extern {
     // UCL_EXTERN bool ucl_array_prepend (ucl_object_t *top,
     // UCL_EXTERN bool ucl_array_merge (ucl_object_t *top, ucl_object_t *elt,
     // UCL_EXTERN ucl_object_t* ucl_array_delete (ucl_object_t *top,
+    pub fn ucl_array_size (top: *const ucl_object_t) -> usize;
     pub fn ucl_array_head(top: *const ucl_object_t) -> *mut ucl_object_t;
     pub fn ucl_array_tail(top: *const ucl_object_t) -> *mut ucl_object_t;
     pub fn ucl_array_pop_last(top: *mut ucl_object_t) -> *mut ucl_object_t;
     pub fn ucl_array_pop_first(top: *mut ucl_object_t) -> *mut ucl_object_t;
-    pub fn ucl_array_find_index(top: *const ucl_object_t, index: c_uint) -> *const ucl_object_t;
+    pub fn ucl_array_find_index(top: *const ucl_object_t, index: usize) -> *const ucl_object_t;
     // UCL_EXTERN unsigned int ucl_array_index_of (ucl_object_t *top,
 
     // Iteration functions

@@ -83,7 +83,6 @@ impl Parser {
 
     /// Parse file at given `Path`.
     ///
-    /// It moves out `Parser`.
     pub fn parse_file<T: AsRef<Path>>(mut self, path: T) -> Result<Object> {
         let filename = path.as_ref().to_str().unwrap();
         let s = CString::new(filename).unwrap();
@@ -178,12 +177,12 @@ mod test {
 
     #[test]
     fn variables() {
-        let s = r#"lol = $LOL"#;
+        let s = r#"testVar = $ENV"#;
         let p = Parser::new();
-        p.register_var("LOL".to_string(), "test".to_string());
+        p.register_var("ENV".to_string(), "test".to_string());
         let res = p.parse(s).unwrap();
 
-        assert_eq!(res.fetch("lol").unwrap().as_string(), Some("test".to_string()));
+        assert_eq!(res.fetch("testVar").unwrap().as_string(), Some("test".to_string()));
     }
 
     #[test]
@@ -208,6 +207,21 @@ mod test {
         for o in val {
             assert_ne!(o.as_string(), None);
         }
+
+    }
+
+    #[test]
+    fn object_dump() {
+        let parser = Parser::new();
+        let result = parser.parse(r#"name = "test_string";
+            section {
+                nice = true;
+                server = ["http://localhost:6666", "test_string"];
+                chunk = 1Gb;
+            }"#).unwrap();
+        let val = result.fetch_path("section.server");
+        assert!(val.is_some());
+        assert_eq!(result.dump().len(), 138);
 
     }
 

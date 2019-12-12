@@ -26,7 +26,7 @@ impl Builder {
     }
 
     pub fn build(self) -> Object {
-        Object::from_cptr(self.obj).unwrap()
+        Object::from_mut_cptr(self.obj).unwrap()
     }
 }
 
@@ -70,8 +70,6 @@ from_primitive!(bool, ucl_object_frombool);
 
 impl From<String> for Builder {
     fn from(val: String) -> Self {
-        //use libc;
-        //use libucl_sys::ucl_object_fromlstring;
 
         let len = val.len();
         let s = CString::new(val).unwrap();
