@@ -7,10 +7,6 @@ build = "build.rs"
 license-file = "LICENSE"
 repository = "https://github.com/draft6/libucl-rs/libucl-bind"
 
-[lib]
-name = "libucl_bind"
-path = "lib.rs"
-
 [dependencies]
 libc = "0.2.66"
 bitflags = "1.2"
