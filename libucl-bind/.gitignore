@@ -1,3 +1,2 @@
-libucl/lua/libucl.rockspec
 target
 Cargo.lock
