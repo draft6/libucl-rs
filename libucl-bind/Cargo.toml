@@ -6,7 +6,34 @@ authors = ["Łukasz Niemier <lukasz@niemier.pl>", "Igor Laćarac <draftsix@gmail
 build = "build.rs"
 license-file = "LICENSE"
 repository = "https://github.com/draft6/libucl-rs/libucl-bind"
-exclude = ["libucl/lua/libucl.rockspec"]
+exclude = [
+  "libucl/lua/libucl.rockspec",
+  "libucl/lua/Makefile",
+  "libucl/lua/Makefile.in",
+  "libucl/doc/Makefile",
+  "libucl/doc/Makefile.in",
+  "libucl/aclocal.m4",
+  "libucl/ar-lib",
+  "libucl/autom4te.cache",
+  "libucl/compile",
+  "libucl/config*",
+  "libucl/depcomp",
+  "libucl/install-sh",
+  "libucl/libtool",
+  "libucl/libucl.pc",
+  "libucl/ltmain.sh",
+  "libucl/m4/libtool.m4",
+  "libucl/m4/ltoptions.m4",
+  "libucl/m4/ltsugar.m4",
+  "libucl/m4/ltversion.m4",
+  "libucl/m4/lt~obsolete.m4",
+  "libucl/m4/missing",
+  "libucl/src/Makefile*",
+  "libucl/stamp-*",
+  "libucl/test-driver",
+  "libucl/tests/Makefile*",
+  "libucl/utils/Makefile*" 
+]
 
 [dependencies]
 libc = "0.2.66"
