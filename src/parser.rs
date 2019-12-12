@@ -1,4 +1,4 @@
-use libucl_sys::*;
+use libucl_bind::*;
 use libc::size_t;
 
 use utils;

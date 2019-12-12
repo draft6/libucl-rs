@@ -1,4 +1,4 @@
-use libucl_sys::*;
+use libucl_bind::*;
 
 pub use self::types::Type;
 pub use self::builder::Builder;

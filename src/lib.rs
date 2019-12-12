@@ -88,7 +88,7 @@
 //! assert_eq!(document.fetch("param").unwrap().as_string(), Some("value".to_string()));
 //! ```
 
-extern crate libucl_sys;
+extern crate libucl_bind;
 extern crate libc;
 #[macro_use] extern crate bitflags;
 

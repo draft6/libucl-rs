@@ -13,16 +13,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="904f57f5-4bab-431f-bc0d-1979588c0b3d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/libucl-rs.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/saveactions_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libucl-sys/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libucl-sys/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitmodules" beforeDir="false" afterPath="$PROJECT_DIR$/.gitmodules" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libucl-rs.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libucl-rs.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/libucl-sys/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/libucl-sys/Cargo.toml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/libucl-sys/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/libucl-sys/build.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/libucl-sys/lib.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/libucl-sys/libucl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/error.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/error.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/builder.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/builder.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/emitter.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/emitter.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/object/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/object/types.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/object/types.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/parser.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/parser.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -55,6 +61,7 @@
   </component>
   <component name="RustProjectSettings">
     <option name="toolchainHomeDirectory" value="$USER_HOME$/.cargo/bin" />
+    <option name="version" value="2" />
   </component>
   <component name="ServiceViewManager">
     <option name="viewStates">

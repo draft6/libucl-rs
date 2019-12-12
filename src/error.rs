@@ -1,4 +1,4 @@
-use libucl_sys::ucl_error_t;
+use libucl_bind::ucl_error_t;
 
 #[derive(Clone, Debug)]
 pub enum Error {

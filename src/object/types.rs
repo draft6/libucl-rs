@@ -1,4 +1,4 @@
-use libucl_sys::ucl_type_t;
+use libucl_bind::ucl_type_t;
 
 #[derive(Debug, PartialEq, Eq, Copy, Clone)]
 pub enum Type {

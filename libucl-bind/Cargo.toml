@@ -1,14 +1,14 @@
 [package]
-name = "libucl-sys"
+name = "libucl-bind"
 version = "0.2.0"
 description = "Low-level bindings to libucl."
 authors = ["Łukasz Niemier <lukasz@niemier.pl>", "Igor Laćarac <draftsix@gmail.com>"]
 build = "build.rs"
 license-file = "LICENSE"
-repository = "https://github.com/draft6/libucl-rs/libucl-sys"
+repository = "https://github.com/draft6/libucl-rs/libucl-bind"
 
 [lib]
-name = "libucl_sys"
+name = "libucl_bind"
 path = "lib.rs"
 
 [dependencies]
