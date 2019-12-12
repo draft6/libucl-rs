@@ -30,7 +30,7 @@ fn main() {
     println!("cargo:rustc-link-search=native={}", dst.join("lib").display());
 
     let mut cmd = Command::new("make");
-    cmd
+    let _ = cmd
         .current_dir(&src.join("libucl"))
         .arg("clean")
         .status();
