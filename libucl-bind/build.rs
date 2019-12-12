@@ -28,6 +28,12 @@ fn main() {
 
     println!("cargo:rustc-link-lib=static=ucl");
     println!("cargo:rustc-link-search=native={}", dst.join("lib").display());
+
+    let mut cmd = Command::new("make");
+    cmd
+        .current_dir(&src.join("libucl"))
+        .arg("clean")
+        .status();
 }
 
 fn run(cmd: &mut Command, program: &str) {
