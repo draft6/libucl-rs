@@ -2,7 +2,6 @@
 name = "libucl"
 version = "0.2.0"
 description = "Rust wrapper with bindings to libucl"
-documentation = ""
 authors = ["Łukasz Niemier <lukasz@niemier.pl>", "Igor Laćarac <draftsix@gmail.com>"]
 license = "MIT"
 repository = "https://github.com/draft6/libucl-rs"
