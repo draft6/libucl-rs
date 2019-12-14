@@ -92,11 +92,11 @@ extern crate libucl_bind;
 extern crate libc;
 #[macro_use] extern crate bitflags;
 
-pub use error::Error;
+pub use error::UclError;
 pub use parser::Parser;
 pub use object::Object;
 
-pub type Result<T> = std::result::Result<T, Error>;
+pub type Result<T> = std::result::Result<T, UclError>;
 
 mod utils;
 pub mod error;

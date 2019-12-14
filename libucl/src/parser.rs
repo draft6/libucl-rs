@@ -118,11 +118,11 @@ impl Parser {
         object::Builder::from_ptr(unsafe { ucl_parser_get_object(self.parser) }).map(|o| o.build())
     }
 
-    fn get_error(&mut self) -> error::Error {
+    fn get_error(&mut self) -> error::UclError {
         let err = unsafe { ucl_parser_get_error_code(self.parser) };
         let desc = unsafe { ucl_parser_get_error(self.parser) };
 
-        error::Error::from_code(err, utils::to_str(desc).unwrap())
+        error::UclErrorType::from_code(err, utils::to_str(desc).unwrap())
     }
 }
 
