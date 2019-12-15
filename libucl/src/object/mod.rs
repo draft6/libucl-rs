@@ -2,7 +2,6 @@ use std::convert::From;
 use std::ffi::CString;
 use std::fmt;
 
-
 use libc::{
     c_double,
     c_uchar,
@@ -325,7 +324,7 @@ impl Object {
                 msg: ['\0' as i8; 128],
                 obj: std::ptr::null_mut(),
             };
-            if ucl_object_validate(self.obj, schema.obj, &mut err) {
+            if ucl_object_validate(schema.obj,self.obj, &mut err) {
                 return Ok(())
             }
             Err(UclSchemaErrorType::from_code(err.code as i32, String::from("")))

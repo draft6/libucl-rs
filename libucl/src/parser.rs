@@ -1,18 +1,17 @@
-use libucl_bind::*;
+use std::ffi::CString;
+use std::path::Path;
+
 use libc::size_t;
 
-use utils;
 use error;
-
+use libucl_bind::*;
 use object::{
     self,
-    Object
+    Object,
 };
+use utils;
 
 use super::Result;
-
-use std::path::Path;
-use std::ffi::CString;
 
 bitflags! {
     pub struct Flags: i32 {
@@ -222,7 +221,17 @@ mod test {
         let val = result.fetch_path("section.server");
         assert!(val.is_some());
         assert_eq!(result.dump().len(), 138);
-
     }
 
+    #[test]
+    fn validate_with_schema() {
+        let parser = Parser::new();
+        let item = r#"{"key": "some string"}"#;
+        let schema = r#"{"type": "object", "properties":{"key": {"type":"string"}}}"#;
+        let item = parser.parse(item).unwrap();
+        let parser = Parser::new();
+        let schema = parser.parse(schema).unwrap();
+        let res = item.validate_with_schema(&schema);
+        assert_eq!(res.is_ok(), true);
+    }
 }
