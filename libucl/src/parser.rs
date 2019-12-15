@@ -133,6 +133,8 @@ impl Drop for Parser {
 
 #[cfg(test)]
 mod test {
+    use error::UclSchemaErrorType;
+    
     use super::*;
 
     #[test]
@@ -233,5 +235,31 @@ mod test {
         let schema = parser.parse(schema).unwrap();
         let res = item.validate_with_schema(&schema);
         assert_eq!(res.is_ok(), true);
+    }
+
+    #[test]
+    fn validate_with_schema_wrong_type() {
+        let parser = Parser::new();
+        let item = r#"{"key": 123}"#;
+        let schema = r#"{"type": "object", "properties":{"key": {"type":"string"}}}"#;
+        let item = parser.parse(item).unwrap();
+        let parser = Parser::new();
+        let schema = parser.parse(schema).unwrap();
+        let res = item.validate_with_schema(&schema);
+        assert_eq!(res.is_err(), true);
+        assert_eq!(res.err().unwrap().code, UclSchemaErrorType::TypeMismatch)
+    }
+
+    #[test]
+    fn validate_with_schema_missing_type() {
+        let parser = Parser::new();
+        let item = r#"{"key": "123"}"#;
+        let schema = r#"{"type": "object", "properties":{"key": {"type":"string"},"value":{"type":"string"}}, "required":["value"]},"#;
+        let item = parser.parse(item).unwrap();
+        let parser = Parser::new();
+        let schema = parser.parse(schema).unwrap();
+        let res = item.validate_with_schema(&schema);
+        assert_eq!(res.is_err(), true);
+        assert_eq!(res.err().unwrap().code, UclSchemaErrorType::MissingProperty)
     }
 }

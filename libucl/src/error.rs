@@ -55,7 +55,7 @@ impl Error for UclError {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum UclSchemaErrorType {
     Ok,
     TypeMismatch,
@@ -65,6 +65,7 @@ pub enum UclSchemaErrorType {
     MissingDependency,
     Other,
 }
+
 
 impl UclSchemaErrorType {
     pub fn from_code(num: i32, desc: String) -> UclSchemaError {
@@ -82,8 +83,8 @@ impl UclSchemaErrorType {
 
 #[derive(Clone, Debug)]
 pub struct UclSchemaError {
-    code: UclSchemaErrorType,
-    desc: String,
+    pub code: UclSchemaErrorType,
+    pub desc: String,
 }
 
 
