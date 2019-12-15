@@ -167,9 +167,9 @@ pub enum ucl_schema_error_code {
 
 #[repr(C)]
 pub struct ucl_schema_error {
-    code: ucl_schema_error_code,
-    msg: [c_char; 128],
-    obj: *const ucl_object_t
+    pub code: ucl_schema_error_code,
+    pub msg: [c_char; 128],
+    pub obj: *const ucl_object_t
 }
 
 extern {
@@ -286,5 +286,5 @@ extern {
     // UCL_EXTERN void ucl_object_array_sort (ucl_object_t *ar,
     pub fn ucl_object_get_priority(obj: *const ucl_object_t) -> c_uint;
     // UCL_EXTERN void ucl_object_set_priority (ucl_object_t *obj,
-    // UCL_EXTERN bool ucl_object_validate (const ucl_object_t *schema,
+    pub fn ucl_object_validate (schema: *const ucl_object_t, obj: *const ucl_object_t, err: *mut ucl_schema_error) -> bool;
 }
