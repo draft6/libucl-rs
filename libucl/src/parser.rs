@@ -288,4 +288,24 @@ mod test {
         assert_eq!(res.is_err(), true);
         assert_eq!(res.err().unwrap().code, UclSchemaErrorType::Constraint)
     }
+
+    #[test]
+    fn validate_with_schema_missing_dependency() {
+        let parser = Parser::new();
+        let item = r#"{"key": "123"}"#;
+        let schema = r#"{"type": "object",
+        "properties":{
+            "key": {"type":"string"},
+            "value":{"type":"string"}
+         },
+        "dependencies":{
+            "key":["value"]
+        }}"#;
+        let item = parser.parse(item).unwrap();
+        let parser = Parser::new();
+        let schema = parser.parse(schema).unwrap();
+        let res = item.validate_with_schema(&schema);
+        assert_eq!(res.is_err(), true);
+        assert_eq!(res.err().unwrap().code, UclSchemaErrorType::MissingDependency)
+    }
 }
