@@ -134,7 +134,7 @@ impl Drop for Parser {
 #[cfg(test)]
 mod test {
     use error::UclSchemaErrorType;
-    
+
     use super::*;
 
     #[test]
@@ -254,12 +254,38 @@ mod test {
     fn validate_with_schema_missing_type() {
         let parser = Parser::new();
         let item = r#"{"key": "123"}"#;
-        let schema = r#"{"type": "object", "properties":{"key": {"type":"string"},"value":{"type":"string"}}, "required":["value"]},"#;
+        let schema = r#"{"type": "object", "properties":{"key": {"type":"string"},"value":{"type":"string"}}, "required":["value"]}"#;
         let item = parser.parse(item).unwrap();
         let parser = Parser::new();
         let schema = parser.parse(schema).unwrap();
         let res = item.validate_with_schema(&schema);
         assert_eq!(res.is_err(), true);
         assert_eq!(res.err().unwrap().code, UclSchemaErrorType::MissingProperty)
+    }
+
+    #[test]
+    fn validate_with_schema_invalid_schema() {
+        let parser = Parser::new();
+        let item = r#"{"key": "123"}"#;
+        let schema = r#"{"type": "object", "properties":{"key": {"type":"aa"},"value":{"type":"string"}}, "required":["value"]}"#;
+        let item = parser.parse(item).unwrap();
+        let parser = Parser::new();
+        let schema = parser.parse(schema).unwrap();
+        let res = item.validate_with_schema(&schema);
+        assert_eq!(res.is_err(), true);
+        assert_eq!(res.err().unwrap().code, UclSchemaErrorType::InvalidSchema)
+    }
+
+    #[test]
+    fn validate_with_schema_invalid_constraint() {
+        let parser = Parser::new();
+        let item = r#"{"key": "123"}"#;
+        let schema = r#"{"type": "object", "properties":{"key": {"type":"string","maxLength":2}}}"#;
+        let item = parser.parse(item).unwrap();
+        let parser = Parser::new();
+        let schema = parser.parse(schema).unwrap();
+        let res = item.validate_with_schema(&schema);
+        assert_eq!(res.is_err(), true);
+        assert_eq!(res.err().unwrap().code, UclSchemaErrorType::Constraint)
     }
 }
