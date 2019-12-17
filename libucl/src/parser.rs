@@ -1,18 +1,17 @@
-use libucl_bind::*;
+use std::ffi::CString;
+use std::path::Path;
+
 use libc::size_t;
 
-use utils;
 use error;
-
+use libucl_bind::*;
 use object::{
     self,
-    Object
+    Object,
 };
+use utils;
 
 use super::Result;
-
-use std::path::Path;
-use std::ffi::CString;
 
 bitflags! {
     pub struct Flags: i32 {
@@ -134,6 +133,8 @@ impl Drop for Parser {
 
 #[cfg(test)]
 mod test {
+    use error::UclSchemaErrorType;
+
     use super::*;
 
     #[test]
@@ -222,7 +223,89 @@ mod test {
         let val = result.fetch_path("section.server");
         assert!(val.is_some());
         assert_eq!(result.dump().len(), 138);
-
     }
 
+    #[test]
+    fn validate_with_schema() {
+        let parser = Parser::new();
+        let item = r#"{"key": "some string"}"#;
+        let schema = r#"{"type": "object", "properties":{"key": {"type":"string"}}}"#;
+        let item = parser.parse(item).unwrap();
+        let parser = Parser::new();
+        let schema = parser.parse(schema).unwrap();
+        let res = item.validate_with_schema(&schema);
+        assert_eq!(res.is_ok(), true);
+    }
+
+    #[test]
+    fn validate_with_schema_wrong_type() {
+        let parser = Parser::new();
+        let item = r#"{"key": 123}"#;
+        let schema = r#"{"type": "object", "properties":{"key": {"type":"string"}}}"#;
+        let item = parser.parse(item).unwrap();
+        let parser = Parser::new();
+        let schema = parser.parse(schema).unwrap();
+        let res = item.validate_with_schema(&schema);
+        assert_eq!(res.is_err(), true);
+        assert_eq!(res.err().unwrap().code, UclSchemaErrorType::TypeMismatch)
+    }
+
+    #[test]
+    fn validate_with_schema_missing_type() {
+        let parser = Parser::new();
+        let item = r#"{"key": "123"}"#;
+        let schema = r#"{"type": "object", "properties":{"key": {"type":"string"},"value":{"type":"string"}}, "required":["value"]}"#;
+        let item = parser.parse(item).unwrap();
+        let parser = Parser::new();
+        let schema = parser.parse(schema).unwrap();
+        let res = item.validate_with_schema(&schema);
+        assert_eq!(res.is_err(), true);
+        assert_eq!(res.err().unwrap().code, UclSchemaErrorType::MissingProperty)
+    }
+
+    #[test]
+    fn validate_with_schema_invalid_schema() {
+        let parser = Parser::new();
+        let item = r#"{"key": "123"}"#;
+        let schema = r#"{"type": "object", "properties":{"key": {"type":"aa"},"value":{"type":"string"}}, "required":["value"]}"#;
+        let item = parser.parse(item).unwrap();
+        let parser = Parser::new();
+        let schema = parser.parse(schema).unwrap();
+        let res = item.validate_with_schema(&schema);
+        assert_eq!(res.is_err(), true);
+        assert_eq!(res.err().unwrap().code, UclSchemaErrorType::InvalidSchema)
+    }
+
+    #[test]
+    fn validate_with_schema_invalid_constraint() {
+        let parser = Parser::new();
+        let item = r#"{"key": "123"}"#;
+        let schema = r#"{"type": "object", "properties":{"key": {"type":"string","maxLength":2}}}"#;
+        let item = parser.parse(item).unwrap();
+        let parser = Parser::new();
+        let schema = parser.parse(schema).unwrap();
+        let res = item.validate_with_schema(&schema);
+        assert_eq!(res.is_err(), true);
+        assert_eq!(res.err().unwrap().code, UclSchemaErrorType::Constraint)
+    }
+
+    #[test]
+    fn validate_with_schema_missing_dependency() {
+        let parser = Parser::new();
+        let item = r#"{"key": "123"}"#;
+        let schema = r#"{"type": "object",
+        "properties":{
+            "key": {"type":"string"},
+            "value":{"type":"string"}
+         },
+        "dependencies":{
+            "key":["value"]
+        }}"#;
+        let item = parser.parse(item).unwrap();
+        let parser = Parser::new();
+        let schema = parser.parse(schema).unwrap();
+        let res = item.validate_with_schema(&schema);
+        assert_eq!(res.is_err(), true);
+        assert_eq!(res.err().unwrap().code, UclSchemaErrorType::MissingDependency)
+    }
 }

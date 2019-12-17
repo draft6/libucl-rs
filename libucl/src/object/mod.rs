@@ -1,21 +1,20 @@
-use libucl_bind::*;
+use std::convert::From;
+use std::ffi::CString;
+use std::fmt;
 
-pub use self::types::Type;
-pub use self::builder::Builder;
-pub use self::emitter::Emitter;
+use libc::{
+    c_double,
+    c_uchar,
+    c_void,
+};
+
+use error::{UclSchemaError, UclSchemaErrorType};
+use libucl_bind::*;
 use utils;
 
-use std::convert::From;
-use std::ffi::{
-    CString
-};
-use libc::{
-    c_void,
-    c_uchar,
-    c_double,
-};
-
-use std::fmt;
+pub use self::builder::Builder;
+pub use self::emitter::Emitter;
+pub use self::types::Type;
 
 pub mod types;
 pub mod builder;
@@ -308,7 +307,6 @@ impl Object {
     /// assert_eq!(obj.fetch_path("a.b").unwrap().as_string(), Some("c".to_string()));
     /// ```
     pub fn fetch_path<T: AsRef<str>>(&self, path: T) -> Option<Object> {
-
         if self.get_type() != Type::Object { return None }
 
         let p = CString::new(path.as_ref()).unwrap();
@@ -316,6 +314,20 @@ impl Object {
             let out = ucl_object_lookup_path(self.obj, p.as_ptr());
 
             Object::from_cptr(out)
+        }
+    }
+
+    pub fn validate_with_schema(&self, schema: &Object) -> Result<(), UclSchemaError> {
+        unsafe {
+            let mut err = ucl_schema_error {
+                code: ucl_schema_error_code::UCL_SCHEMA_OK,
+                msg: ['\0' as i8; 128],
+                obj: std::ptr::null_mut(),
+            };
+            if ucl_object_validate(schema.obj,self.obj, &mut err) {
+                return Ok(())
+            }
+            Err(UclSchemaErrorType::from_code(err.code as i32, String::from("")))
         }
     }
 }

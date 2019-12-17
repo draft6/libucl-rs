@@ -47,3 +47,5 @@ fn to_int_invalid_type() {
     let obj = Builder::from(10.0f64).build();
     assert_eq!(obj.as_int(), None);
 }
+
+
