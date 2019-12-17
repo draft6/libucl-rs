@@ -4,7 +4,8 @@
 [![MIT Licensed](https://img.shields.io/badge/Licence-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 A lightweight wrapper library in Rust around libucl, a library used for parsing of UCL (Universal Configuration Language) files.
-##Basics
+
+## Basics
 You can read all about UCL (Universal Configuration Language) [here][libucldoc] 
 ## Usage
 
@@ -23,7 +24,8 @@ upstream {
 println!("{}", result.fetch_path("upstream.h2c").and_then(|v| v.as_bool()));
 
 ```
-####Validation
+
+## Validation
 You can write validation schemas in UCL format as well,
  as long as it follows the JSON Schema rules for defining a schema with the exception of remote references.
  UCL currently is not absolutely strict about validation schemas themselves, 
@@ -53,7 +55,8 @@ let res = item.validate_with_schema(&schema);
 assert_eq!(res.is_ok(), true);
 
 ```
-##Instalation
+
+## Instalation
 In your `Cargo.toml` file under `[dependencies]` add `libucl = "0.2.1"` 
 
 
