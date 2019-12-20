@@ -1,6 +1,6 @@
 [package]
 name = "libucl-bind"
-version = "0.2.0"
+version = "0.2.1"
 description = "Low-level bindings to libucl."
 authors = ["Łukasz Niemier <lukasz@niemier.pl>", "Igor Laćarac <draftsix@gmail.com>"]
 build = "build.rs"

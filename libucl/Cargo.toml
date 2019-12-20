@@ -1,14 +1,11 @@
 [package]
 name = "libucl"
-version = "0.2.1"
+version = "0.2.2"
 description = "Rust wrapper with bindings to libucl"
 authors = ["Łukasz Niemier <lukasz@niemier.pl>", "Igor Laćarac <draftsix@gmail.com>"]
 license = "MIT"
 repository = "https://github.com/draft6/libucl-rs"
-
-[features]
-default = []
-unstable = [] # in case of nightly build
+readme = "README.md"
 
 [dependencies]
 libc = "0.2.66"
@@ -16,4 +13,4 @@ bitflags = "1.2"
 
 [dependencies.libucl-bind]
 path = "../libucl-bind"
-version = "0.2.0"
+version = "0.2.1"
