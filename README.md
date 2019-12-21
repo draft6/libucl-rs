@@ -57,7 +57,7 @@ assert_eq!(res.is_ok(), true);
 ```
 
 ## Instalation
-In your `Cargo.toml` file under `[dependencies]` add `libucl = "0.2.1"` 
+In your `Cargo.toml` file under `[dependencies]` add `libucl = "0.2.2"` 
 
 
 

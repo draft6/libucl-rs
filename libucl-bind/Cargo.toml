@@ -13,3 +13,6 @@ exclude = [
 [dependencies]
 libc = "0.2.66"
 bitflags = "1.2"
+
+[build-dependencies]
+cmake = "0.1.42"
