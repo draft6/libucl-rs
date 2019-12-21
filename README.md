@@ -2,9 +2,11 @@
 
 ![](https://github.com/draft6/libucl-rs/workflows/Build/badge.svg)
 [![MIT Licensed](https://img.shields.io/badge/Licence-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-
+[![Crates.io](https://img.shields.io/crates/v/libucl)](https://crates.io/crates/libucl)
 A lightweight wrapper library in Rust around libucl, a library used for parsing of UCL (Universal Configuration Language) files.
 
+## Platform support
+Linux / Mac OSX
 ## Basics
 You can read all about UCL (Universal Configuration Language) [here][libucldoc] 
 ## Usage
@@ -55,12 +57,31 @@ let res = item.validate_with_schema(&schema);
 assert_eq!(res.is_ok(), true);
 
 ```
+## Dump Object
+It's possible to dump objects into JSON, JSON compact, YAML and Config format
 
-## Instalation
-In your `Cargo.toml` file under `[dependencies]` add `libucl = "0.2.2"` 
+```rust
+  let parser = Parser::new();
+  let result = parser.parse(r#"section {
+    flag = true;
+    number = 10k;
+    subsection {
+        hosts = {
+            host = "localhost";
+            port = 9000
+        }
+        hosts = {
+            host = "remotehost"
+            port = 9090
+        }
+    }
+}"#).unwrap();
+        let regex = Regex::new("\"flag\":true").unwrap();
+        let val = result.dump_into(Emitter::JSONCompact);
+        assert_eq!(regex.is_match(val.as_str()), true);
 
 
-
+```
 
 ## Licence
 

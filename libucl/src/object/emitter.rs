@@ -1,15 +1,16 @@
 use libucl_bind::*;
+use utils;
 
 use super::Object;
-
-use utils;
 
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub enum Emitter {
     JSON,
     JSONCompact,
     Config,
-    YAML
+    YAML,
+    MsgPack,
+    Max,
 }
 
 impl Emitter {
@@ -22,10 +23,12 @@ impl Emitter {
 impl From<ucl_emitter_t> for Emitter {
     fn from(raw: ucl_emitter_t) -> Self {
         match raw {
-            ucl_emitter_t::UCL_EMIT_JSON         => Emitter::JSON,
+            ucl_emitter_t::UCL_EMIT_JSON => Emitter::JSON,
             ucl_emitter_t::UCL_EMIT_JSON_COMPACT => Emitter::JSONCompact,
-            ucl_emitter_t::UCL_EMIT_CONFIG       => Emitter::Config,
-            ucl_emitter_t::UCL_EMIT_YAML         => Emitter::YAML,
+            ucl_emitter_t::UCL_EMIT_CONFIG => Emitter::Config,
+            ucl_emitter_t::UCL_EMIT_YAML => Emitter::YAML,
+            ucl_emitter_t::UCL_EMIT_MSGPACK => Emitter::MsgPack,
+            ucl_emitter_t::UCL_EMIT_MAX => Emitter::Max
         }
     }
 }
@@ -33,10 +36,12 @@ impl From<ucl_emitter_t> for Emitter {
 impl Into<ucl_emitter_t> for Emitter {
     fn into(self) -> ucl_emitter_t {
         match self {
-            Emitter::JSON        => ucl_emitter_t::UCL_EMIT_JSON,
+            Emitter::JSON => ucl_emitter_t::UCL_EMIT_JSON,
             Emitter::JSONCompact => ucl_emitter_t::UCL_EMIT_JSON_COMPACT,
-            Emitter::Config      => ucl_emitter_t::UCL_EMIT_CONFIG,
-            Emitter::YAML        => ucl_emitter_t::UCL_EMIT_YAML
+            Emitter::Config => ucl_emitter_t::UCL_EMIT_CONFIG,
+            Emitter::YAML => ucl_emitter_t::UCL_EMIT_YAML,
+            Emitter::MsgPack => ucl_emitter_t::UCL_EMIT_MSGPACK,
+            Emitter::Max => ucl_emitter_t::UCL_EMIT_MAX
         }
     }
 }
