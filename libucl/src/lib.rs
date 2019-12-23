@@ -97,6 +97,7 @@ pub use error::UclError;
 pub use error::UclSchemaError;
 pub use parser::Parser;
 pub use object::Object;
+pub use object::emitter::Emitter;
 
 pub type Result<T> = std::result::Result<T, UclError>;
 
