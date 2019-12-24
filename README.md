@@ -4,9 +4,10 @@
 [![MIT Licensed](https://img.shields.io/badge/Licence-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Crates.io](https://img.shields.io/crates/v/libucl)](https://crates.io/crates/libucl)
 A lightweight wrapper library in Rust around libucl, a library used for parsing of UCL (Universal Configuration Language) files.
-
+## Requirements
+In order to use this u need cmake installed
 ## Platform support
-Linux / Mac OSX
+Linux / Mac OSX /Windows
 ## Basics
 You can read all about UCL (Universal Configuration Language) [here][libucldoc] 
 ## Usage
@@ -82,6 +83,31 @@ It's possible to dump objects into JSON, JSON compact, YAML and Config format
 
 
 ```
+
+## UCL tool
+With the UCL tool you can convert input files into a specified format. The input and output file for the tool default to stdin and stdout so you can use them in a pipe.
+You can also specify a schema file and perform validation.
+```dtd
+USAGE:
+    ucltool [OPTIONS] [help]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -f, --format <format>    Specify the output format [default: ucl]  [possible values: ucl, json, json_compact, yaml,
+                             msgpack]
+    -i, --in <INFILE>        Specify input filename path (defaults to standard input)
+    -o, --out <OUTFILE>      Specify output filename path(defaults to standard output)
+    -s, --schema <SCHEMA>    Specify schema file path to perform validation
+
+ARGS:
+    <help>    print this message and exit
+
+```
+
+
 
 ## Licence
 
