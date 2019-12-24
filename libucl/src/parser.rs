@@ -133,7 +133,11 @@ impl Drop for Parser {
 
 #[cfg(test)]
 mod test {
+    extern crate regex;
+    use self::regex::Regex;
+
     use error::UclSchemaErrorType;
+    use object::Emitter;
 
     use super::*;
 
@@ -223,6 +227,94 @@ mod test {
         let val = result.fetch_path("section.server");
         assert!(val.is_some());
         assert_eq!(result.dump().len(), 138);
+    }
+
+    #[test]
+    fn object_dump_into_json() {
+        let parser = Parser::new();
+        let result = parser.parse(r#"section {
+    flag = true;
+    number = 10k;
+    subsection {
+        hosts = {
+            host = "localhost";
+            port = 9000
+        }
+        hosts = {
+            host = "remotehost"
+            port = 9090
+        }
+    }
+}"#).unwrap();
+        let regex = Regex::new("\"flag\": true").unwrap();
+        let val = result.dump_into(Emitter::JSON);
+        assert_eq!(regex.is_match(val.as_str()), true);
+    }
+
+    #[test]
+    fn object_dump_into_json_compact() {
+        let parser = Parser::new();
+        let result = parser.parse(r#"section {
+    flag = true;
+    number = 10k;
+    subsection {
+        hosts = {
+            host = "localhost";
+            port = 9000
+        }
+        hosts = {
+            host = "remotehost"
+            port = 9090
+        }
+    }
+}"#).unwrap();
+        let regex = Regex::new("\"flag\":true").unwrap();
+        let val = result.dump_into(Emitter::JSONCompact);
+        assert_eq!(regex.is_match(val.as_str()), true);
+    }
+
+    #[test]
+    fn object_dump_into_yml() {
+        let parser = Parser::new();
+        let result = parser.parse(r#"section {
+    flag = true;
+    number = 10k;
+    subsection {
+        hosts = {
+            host = "localhost";
+            port = 9000
+        }
+        hosts = {
+            host = "remotehost"
+            port = 9090
+        }
+    }
+}"#).unwrap();
+        let regex = Regex::new("flag: true").unwrap();
+        let val = result.dump_into(Emitter::YAML);
+        assert_eq!(regex.is_match(val.as_str()), true);
+    }
+
+    #[test]
+    fn object_dump_into_config() {
+        let parser = Parser::new();
+        let result = parser.parse(r#"section {
+    flag = true;
+    number = 10k;
+    subsection {
+        hosts = {
+            host = "localhost";
+            port = 9000
+        }
+        hosts = {
+            host = "remotehost"
+            port = 9090
+        }
+    }
+}"#).unwrap();
+        let regex = Regex::new("flag = true").unwrap();
+        let val = result.dump_into(Emitter::Config);
+        assert_eq!(regex.is_match(val.as_str()), true);
     }
 
     #[test]

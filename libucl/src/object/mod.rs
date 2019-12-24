@@ -125,7 +125,12 @@ impl Object {
     //     unsafe { ucl_object_get_priority(self.obj) as usize }
     // }
 
-    pub fn dump_into(&self) {}
+    pub fn dump_into(&self, emmiter: Emitter) -> String {
+        match emmiter.emit(self){
+            Some(s) => s,
+            None => String::from("")
+        }
+    }
 
     pub fn dump(&self) -> String {
         let out: Box<String> = Box::new(String::new());

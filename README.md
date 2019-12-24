@@ -2,9 +2,12 @@
 
 ![](https://github.com/draft6/libucl-rs/workflows/Build/badge.svg)
 [![MIT Licensed](https://img.shields.io/badge/Licence-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-
+[![Crates.io](https://img.shields.io/crates/v/libucl)](https://crates.io/crates/libucl)
 A lightweight wrapper library in Rust around libucl, a library used for parsing of UCL (Universal Configuration Language) files.
-
+## Requirements
+In order to use this u need cmake installed
+## Platform support
+Linux / Mac OSX /Windows
 ## Basics
 You can read all about UCL (Universal Configuration Language) [here][libucldoc] 
 ## Usage
@@ -55,10 +58,54 @@ let res = item.validate_with_schema(&schema);
 assert_eq!(res.is_ok(), true);
 
 ```
+## Dump Object
+It's possible to dump objects into JSON, JSON compact, YAML and Config format
 
-## Instalation
-In your `Cargo.toml` file under `[dependencies]` add `libucl = "0.2.2"` 
+```rust
+  let parser = Parser::new();
+  let result = parser.parse(r#"section {
+    flag = true;
+    number = 10k;
+    subsection {
+        hosts = {
+            host = "localhost";
+            port = 9000
+        }
+        hosts = {
+            host = "remotehost"
+            port = 9090
+        }
+    }
+}"#).unwrap();
+        let regex = Regex::new("\"flag\":true").unwrap();
+        let val = result.dump_into(Emitter::JSONCompact);
+        assert_eq!(regex.is_match(val.as_str()), true);
 
+
+```
+
+## UCL tool
+With the UCL tool you can convert input files into a specified format. The input and output file for the tool default to stdin and stdout so you can use them in a pipe.
+You can also specify a schema file and perform validation.
+```dtd
+USAGE:
+    ucltool [OPTIONS] [help]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -f, --format <format>    Specify the output format [default: ucl]  [possible values: ucl, json, json_compact, yaml,
+                             msgpack]
+    -i, --in <INFILE>        Specify input filename path (defaults to standard input)
+    -o, --out <OUTFILE>      Specify output filename path(defaults to standard output)
+    -s, --schema <SCHEMA>    Specify schema file path to perform validation
+
+ARGS:
+    <help>    print this message and exit
+
+```
 
 
 
