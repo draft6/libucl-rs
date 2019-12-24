@@ -3,11 +3,16 @@
 ![](https://github.com/draft6/libucl-rs/workflows/Build/badge.svg)
 [![MIT Licensed](https://img.shields.io/badge/Licence-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Crates.io](https://img.shields.io/crates/v/libucl)](https://crates.io/crates/libucl)
+
 A lightweight wrapper library in Rust around libucl, a library used for parsing of UCL (Universal Configuration Language) files.
 ## Requirements
-In order to use this u need cmake installed
+CMake and a C/C++ compiler like gcc or clang.
+
+Note: Currently, support for remote includes is disabled. Plan is to add it as a feature flag, as it additionally requires libcurl / libfetch.
 ## Platform support
-Linux / Mac OSX /Windows
+Linux / Mac OS
+
+libucl is buildable on Windows, but it is currently not tested.
 ## Basics
 You can read all about UCL (Universal Configuration Language) [here][libucldoc] 
 ## Usage
@@ -30,9 +35,9 @@ println!("{}", result.fetch_path("upstream.h2c").and_then(|v| v.as_bool()));
 
 ## Validation
 You can write validation schemas in UCL format as well,
- as long as it follows the JSON Schema rules for defining a schema with the exception of remote references.
- UCL currently is not absolutely strict about validation schemas themselves, 
- therefore UCL users should supply valid schemas (as it is defined in json-schema draft v4) to ensure that the input objects are validated properly.
+as long as it follows the JSON Schema rules for defining a schema with the exception of remote references.
+UCL currently is not absolutely strict about validation schemas themselves, 
+therefore UCL users should supply valid schemas (as it is defined in json-schema draft v4) to ensure that the input objects are validated properly.
 ```rust
 use libucl::Parser;
 
@@ -62,26 +67,25 @@ assert_eq!(res.is_ok(), true);
 It's possible to dump objects into JSON, JSON compact, YAML and Config format
 
 ```rust
-  let parser = Parser::new();
-  let result = parser.parse(r#"section {
-    flag = true;
-    number = 10k;
-    subsection {
-        hosts = {
-            host = "localhost";
-            port = 9000
-        }
-        hosts = {
-            host = "remotehost"
-            port = 9090
-        }
+let parser = Parser::new();
+let result = parser.parse(r#"section {
+flag = true;
+number = 10k;
+subsection {
+    hosts = {
+        host = "localhost";
+        port = 9000
     }
+    hosts = {
+        host = "remotehost"
+        port = 9090
+    }
+}
 }"#).unwrap();
-        let regex = Regex::new("\"flag\":true").unwrap();
-        let val = result.dump_into(Emitter::JSONCompact);
-        assert_eq!(regex.is_match(val.as_str()), true);
 
-
+let regex = Regex::new("\"flag\":true").unwrap();
+let val = result.dump_into(Emitter::JSONCompact);
+assert_eq!(regex.is_match(val.as_str()), true);
 ```
 
 ## UCL tool
@@ -106,8 +110,6 @@ ARGS:
     <help>    print this message and exit
 
 ```
-
-
 
 ## Licence
 
