@@ -8,7 +8,6 @@ pub type __int64_t = ::std::os::raw::c_long;
 pub type __uint64_t = ::std::os::raw::c_ulong;
 pub type __size_t = __uint64_t;
 pub type __off_t = __int64_t;
-pub type size_t = __size_t;
 pub type fpos_t = __off_t;
 #[repr(u32)]
 #[doc = " The common error codes returned by ucl parser"]
@@ -627,7 +626,7 @@ extern "C" {
     #[doc = " @return new object"]
     pub fn ucl_object_fromstring_common(
         str: *const ::std::os::raw::c_char,
-        len: size_t,
+        len: usize,
         flags: ucl_string_flags,
     ) -> *mut ucl_object_t;
 }
@@ -644,7 +643,7 @@ extern "C" {
     #[doc = " @return new object"]
     pub fn ucl_object_fromlstring(
         str: *const ::std::os::raw::c_char,
-        len: size_t,
+        len: usize,
     ) -> *mut ucl_object_t;
 }
 extern "C" {
@@ -677,7 +676,7 @@ extern "C" {
         top: *mut ucl_object_t,
         elt: *mut ucl_object_t,
         key: *const ::std::os::raw::c_char,
-        keylen: size_t,
+        keylen: usize,
         copy_key: bool,
     ) -> bool;
 }
@@ -694,7 +693,7 @@ extern "C" {
         top: *mut ucl_object_t,
         elt: *mut ucl_object_t,
         key: *const ::std::os::raw::c_char,
-        keylen: size_t,
+        keylen: usize,
         copy_key: bool,
     ) -> bool;
 }
@@ -714,7 +713,7 @@ extern "C" {
     pub fn ucl_object_delete_keyl(
         top: *mut ucl_object_t,
         key: *const ::std::os::raw::c_char,
-        keylen: size_t,
+        keylen: usize,
     ) -> bool;
 }
 extern "C" {
@@ -737,7 +736,7 @@ extern "C" {
     pub fn ucl_object_pop_keyl(
         top: *mut ucl_object_t,
         key: *const ::std::os::raw::c_char,
-        keylen: size_t,
+        keylen: usize,
     ) -> *mut ucl_object_t;
 }
 extern "C" {
@@ -765,7 +764,7 @@ extern "C" {
         top: *mut ucl_object_t,
         elt: *mut ucl_object_t,
         key: *const ::std::os::raw::c_char,
-        keylen: size_t,
+        keylen: usize,
         copy_key: bool,
     ) -> bool;
 }
@@ -940,7 +939,7 @@ extern "C" {
     pub fn ucl_object_tolstring_safe(
         obj: *const ucl_object_t,
         target: *mut *const ::std::os::raw::c_char,
-        tlen: *mut size_t,
+        tlen: *mut usize,
     ) -> bool;
 }
 extern "C" {
@@ -949,7 +948,7 @@ extern "C" {
     #[doc = " @return string value"]
     pub fn ucl_object_tolstring(
         obj: *const ucl_object_t,
-        tlen: *mut size_t,
+        tlen: *mut usize,
     ) -> *const ::std::os::raw::c_char;
 }
 extern "C" {
@@ -986,7 +985,7 @@ extern "C" {
     pub fn ucl_object_lookup_len(
         obj: *const ucl_object_t,
         key: *const ::std::os::raw::c_char,
-        klen: size_t,
+        klen: usize,
     ) -> *const ucl_object_t;
 }
 extern "C" {
@@ -1024,7 +1023,7 @@ extern "C" {
     #[doc = " @return key pointer"]
     pub fn ucl_object_keyl(
         obj: *const ucl_object_t,
-        len: *mut size_t,
+        len: *mut usize,
     ) -> *const ::std::os::raw::c_char;
 }
 extern "C" {
@@ -1173,7 +1172,7 @@ extern "C" {
 pub type ucl_macro_handler = ::std::option::Option<
     unsafe extern "C" fn(
         data: *const ::std::os::raw::c_uchar,
-        len: size_t,
+        len: usize,
         arguments: *const ucl_object_t,
         ud: *mut ::std::os::raw::c_void,
     ) -> bool,
@@ -1189,7 +1188,7 @@ pub type ucl_macro_handler = ::std::option::Option<
 pub type ucl_context_macro_handler = ::std::option::Option<
     unsafe extern "C" fn(
         data: *const ::std::os::raw::c_uchar,
-        len: size_t,
+        len: usize,
         arguments: *const ucl_object_t,
         context: *const ucl_object_t,
         ud: *mut ::std::os::raw::c_void,
@@ -1254,9 +1253,9 @@ extern "C" {
 pub type ucl_variable_handler = ::std::option::Option<
     unsafe extern "C" fn(
         data: *const ::std::os::raw::c_uchar,
-        len: size_t,
+        len: usize,
         replace: *mut *mut ::std::os::raw::c_uchar,
-        replace_len: *mut size_t,
+        replace_len: *mut usize,
         need_free: *mut bool,
         ud: *mut ::std::os::raw::c_void,
     ) -> bool,
@@ -1292,7 +1291,7 @@ extern "C" {
     pub fn ucl_parser_add_chunk(
         parser: *mut ucl_parser,
         data: *const ::std::os::raw::c_uchar,
-        len: size_t,
+        len: usize,
     ) -> bool;
 }
 extern "C" {
@@ -1306,7 +1305,7 @@ extern "C" {
     pub fn ucl_parser_add_chunk_priority(
         parser: *mut ucl_parser,
         data: *const ::std::os::raw::c_uchar,
-        len: size_t,
+        len: usize,
         priority: ::std::os::raw::c_uint,
     ) -> bool;
 }
@@ -1323,7 +1322,7 @@ extern "C" {
     pub fn ucl_parser_add_chunk_full(
         parser: *mut ucl_parser,
         data: *const ::std::os::raw::c_uchar,
-        len: size_t,
+        len: usize,
         priority: ::std::os::raw::c_uint,
         strat: ucl_duplicate_strategy,
         parse_type: ucl_parse_type,
@@ -1338,7 +1337,7 @@ extern "C" {
     pub fn ucl_parser_add_string(
         parser: *mut ucl_parser,
         data: *const ::std::os::raw::c_char,
-        len: size_t,
+        len: usize,
     ) -> bool;
 }
 extern "C" {
@@ -1352,7 +1351,7 @@ extern "C" {
     pub fn ucl_parser_add_string_priority(
         parser: *mut ucl_parser,
         data: *const ::std::os::raw::c_char,
-        len: size_t,
+        len: usize,
         priority: ::std::os::raw::c_uint,
     ) -> bool;
 }
@@ -1537,7 +1536,7 @@ extern "C" {
     pub fn ucl_parser_pubkey_add(
         parser: *mut ucl_parser,
         key: *const ::std::os::raw::c_uchar,
-        len: size_t,
+        len: usize,
     ) -> bool;
 }
 extern "C" {
@@ -1560,7 +1559,7 @@ pub struct ucl_emitter_functions {
     pub ucl_emitter_append_character: ::std::option::Option<
         unsafe extern "C" fn(
             c: ::std::os::raw::c_uchar,
-            nchars: size_t,
+            nchars: usize,
             ud: *mut ::std::os::raw::c_void,
         ) -> ::std::os::raw::c_int,
     >,
@@ -1568,7 +1567,7 @@ pub struct ucl_emitter_functions {
     pub ucl_emitter_append_len: ::std::option::Option<
         unsafe extern "C" fn(
             str: *const ::std::os::raw::c_uchar,
-            len: size_t,
+            len: usize,
             ud: *mut ::std::os::raw::c_void,
         ) -> ::std::os::raw::c_int,
     >,
@@ -1914,7 +1913,7 @@ extern "C" {
     pub fn ucl_object_emit_len(
         obj: *const ucl_object_t,
         emit_type: ucl_emitter,
-        len: *mut size_t,
+        len: *mut usize,
     ) -> *mut ::std::os::raw::c_uchar;
 }
 extern "C" {
