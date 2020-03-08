@@ -10,6 +10,7 @@ bindgen wrapper.h -o src/lib.rs  \
     --blacklist-type __ubuf \
     --default-enum-style rust \
     --opaque-type ucl_parser \
+    --opaque-type ucl_object_s \
     --raw-line '#![allow(non_camel_case_types)]' \
     --size_t-is-usize \
     --whitelist-function "ucl_.*" \

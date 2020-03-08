@@ -2,8 +2,6 @@
 
 #![allow(non_camel_case_types)]
 
-pub type __uint16_t = ::std::os::raw::c_ushort;
-pub type __uint32_t = ::std::os::raw::c_uint;
 pub type __int64_t = ::std::os::raw::c_long;
 pub type __uint64_t = ::std::os::raw::c_ulong;
 pub type __size_t = __uint64_t;
@@ -308,27 +306,10 @@ pub enum ucl_parse_type {
 #[doc = " UCL object structure. Please mention that the most of fields should not be touched by"]
 #[doc = " UCL users. In future, this structure may be converted to private one."]
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[repr(align(8))]
+#[derive(Debug, Copy, Clone)]
 pub struct ucl_object_s {
-    pub value: ucl_object_s__bindgen_ty_1,
-    #[doc = "< Key of an object"]
-    pub key: *const ::std::os::raw::c_char,
-    #[doc = "< Array handle"]
-    pub next: *mut ucl_object_s,
-    #[doc = "< Array handle"]
-    pub prev: *mut ucl_object_s,
-    #[doc = "< Length of a key"]
-    pub keylen: u32,
-    #[doc = "< Size of an object"]
-    pub len: u32,
-    #[doc = "< Reference count"]
-    pub ref_: u32,
-    #[doc = "< Object flags"]
-    pub flags: u16,
-    #[doc = "< Real type"]
-    pub type_: u16,
-    #[doc = "< Pointer to allocated chunks"]
-    pub trash_stack: [*mut ::std::os::raw::c_uchar; 2usize],
+    pub _bindgen_opaque_blob: [u64; 8usize],
 }
 #[doc = " Variant value type"]
 #[repr(C)]
@@ -432,106 +413,6 @@ fn bindgen_test_layout_ucl_object_s() {
         ::std::mem::align_of::<ucl_object_s>(),
         8usize,
         concat!("Alignment of ", stringify!(ucl_object_s))
-    );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<ucl_object_s>())).value as *const _ as usize },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(ucl_object_s),
-            "::",
-            stringify!(value)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<ucl_object_s>())).key as *const _ as usize },
-        8usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(ucl_object_s),
-            "::",
-            stringify!(key)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<ucl_object_s>())).next as *const _ as usize },
-        16usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(ucl_object_s),
-            "::",
-            stringify!(next)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<ucl_object_s>())).prev as *const _ as usize },
-        24usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(ucl_object_s),
-            "::",
-            stringify!(prev)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<ucl_object_s>())).keylen as *const _ as usize },
-        32usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(ucl_object_s),
-            "::",
-            stringify!(keylen)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<ucl_object_s>())).len as *const _ as usize },
-        36usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(ucl_object_s),
-            "::",
-            stringify!(len)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<ucl_object_s>())).ref_ as *const _ as usize },
-        40usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(ucl_object_s),
-            "::",
-            stringify!(ref_)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<ucl_object_s>())).flags as *const _ as usize },
-        44usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(ucl_object_s),
-            "::",
-            stringify!(flags)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<ucl_object_s>())).type_ as *const _ as usize },
-        46usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(ucl_object_s),
-            "::",
-            stringify!(type_)
-        )
-    );
-    assert_eq!(
-        unsafe { &(*(::std::ptr::null::<ucl_object_s>())).trash_stack as *const _ as usize },
-        48usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(ucl_object_s),
-            "::",
-            stringify!(trash_stack)
-        )
     );
 }
 pub type ucl_object_t = ucl_object_s;
